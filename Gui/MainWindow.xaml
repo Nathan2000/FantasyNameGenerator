@@ -1,0 +1,71 @@
+﻿<Window x:Name="Window" x:Class="Gui.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:local="clr-namespace:Gui"
+        xmlns:model="clr-namespace:Gui.Model"
+        Title="Name Generator" Height="350" Width="525" MinHeight="350" MinWidth="525">
+    <Window.Resources>
+        <local:EnumToBooleanConverter x:Key="EnumToBooleanConverter"/>
+        <local:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+    </Window.Resources>
+    <Window.DataContext>
+        <local:NamesViewModel/>
+    </Window.DataContext>
+    <Window.CommandBindings>
+        <CommandBinding Command="Close" Executed="CommandBinding_OnClose"/>
+    </Window.CommandBindings>
+    <DockPanel>
+        <Menu Height="20" IsMainMenu="True" DockPanel.Dock="Top">
+            <MenuItem Header="_File">
+                <MenuItem Header="_Generate" Command="{Binding GenerateNamesCommand}"/>
+                <MenuItem Header="_Clear" Command="{Binding ClearNamesCommand}"/>
+                <Separator/>
+                <MenuItem Command="Close"/>
+            </MenuItem>
+            <MenuItem Header="Options">
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Text="Generate "/>
+                    <TextBox Width="50" Text="{Binding Settings.GenerateNameCount}"/>
+                    <TextBlock Text=" names"/>
+                </StackPanel>
+                <MenuItem Header="Generate adds to list" IsCheckable="True" IsChecked="{Binding Settings.AddToResults}"/>
+                <MenuItem Header="Limit name length" IsCheckable="True" IsChecked="{Binding Settings.ControlLength}"/>
+            </MenuItem>
+            <!--<MenuItem Header="About"/>-->
+        </Menu>
+        <Grid>
+            <ListBox Margin="164,10,10,10" ItemsSource="{Binding GeneratedNames}">
+                <ListBox.CommandBindings>
+                    <CommandBinding Command="Copy" Executed="CommandBinding_OnCopy" CanExecute="CommandBinding_OnCanCopy" />
+                </ListBox.CommandBindings>
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="{Binding Name}"/>
+                            <TextBlock Text="*" Visibility="{Binding IsCanonical, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                <TextBlock.ToolTip>
+                                    <TextBlock>This name or part of it is canonical.</TextBlock>
+                                </TextBlock.ToolTip>
+                            </TextBlock>
+                        </StackPanel>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+                <ListBox.ContextMenu>
+                    <ContextMenu>
+                        <MenuItem Command="Copy"/>
+                        <Separator/>
+                        <MenuItem Header="Clear" Command="{Binding ClearNamesCommand}"/>
+                    </ContextMenu>
+                </ListBox.ContextMenu>
+            </ListBox>
+            <ComboBox Margin="10,10,0,0" VerticalAlignment="Top" HorizontalAlignment="Left" Width="149" ItemsSource="{Binding Categories}" DisplayMemberPath="Name" SelectedItem="{Binding SelectedCategory}" ToolTip="The culture category."/>
+            <ComboBox Margin="10,37,0,0" VerticalAlignment="Top" HorizontalAlignment="Left" Width="149" SelectedIndex="0" DisplayMemberPath="Name" DataContext="{Binding SelectedCategory}" ItemsSource="{Binding Styles}" SelectedItem="{Binding SelectedStyle}" ToolTip="The specific culture of the name."/>
+            <RadioButton Content="Male" HorizontalAlignment="Left" Margin="10,64,0,0" VerticalAlignment="Top" IsChecked="{Binding Settings.Gender, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:Static model:Gender.Male}}"/>
+            <RadioButton Content="Female" HorizontalAlignment="Left" Margin="10,84,0,0" VerticalAlignment="Top" IsChecked="{Binding Settings.Gender, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:Static model:Gender.Female}}"/>
+            <Slider HorizontalAlignment="Left" Margin="10,104,0,0" VerticalAlignment="Top" Width="120" Minimum="2" Maximum="10" Value="{Binding Settings.SequenceSize}" IsSnapToTickEnabled="True" TickPlacement="TopLeft" Visibility="Collapsed" />
+            <TextBlock HorizontalAlignment="Left" Margin="135,112,0,0" TextWrapping="Wrap" Text="{Binding Settings.SequenceSize}" VerticalAlignment="Top" Width="24" Visibility="Collapsed"/>
+            <Button Content="Generate" HorizontalAlignment="Left" Margin="84,0,0,9.8" Width="75" Command="{Binding GenerateNamesCommand}" Height="19" VerticalAlignment="Bottom"/>
+            <TextBlock HorizontalAlignment="Left" Margin="10,104,0,0" TextWrapping="Wrap" Text="{Binding SelectedCategory.SelectedStyle.Description}" VerticalAlignment="Top" Height="163" Width="149"/>
+        </Grid>
+    </DockPanel>
+</Window>

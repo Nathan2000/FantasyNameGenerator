@@ -1,0 +1,103 @@
+﻿<?xml version="1.0"?>
+<ArrayOfNameCategory xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <NameCategory>
+    <Name>Elder Scrolls</Name>
+    <Styles>
+      <NameStyle>
+        <Name>Altmer</Name>
+        <Description>The Altmer, or High Elves, are a tall, golden-skinned race, hailing from Summerset Isle.</Description>
+        <Template xsi:type="NameOnly" />
+      </NameStyle>
+      <NameStyle>
+        <Name>Argonian</Name>
+        <Description>Argonians are the reptilian natives of Black Marsh, a vast swampland province in southeastern Tamriel.</Description>
+        <Template xsi:type="NameOnly" />
+      </NameStyle>
+      <NameStyle>
+        <Name>Ashlander</Name>
+        <Description>The Ashlanders, also called the Velothi after the prophet Veloth, are Dunmeri nomads that traditionally hail from Morrowind's wilderness.</Description>
+        <Template xsi:type="FirstAndLastName" />
+      </NameStyle>
+      <NameStyle>
+        <Name>Bosmer</Name>
+        <Description>The Bosmer are the Elven clan-folk of Valenwood, a forested province in southwestern Tamriel.</Description>
+        <Template xsi:type="NameOnly" />
+      </NameStyle>
+      <NameStyle>
+        <Name>Breton</Name>
+        <Description>Bretons are the human descendants of the Aldmeri-Nedic Manmer of the Merethic Era and are now the inhabitants of the province of High Rock.</Description>
+        <Template xsi:type="FirstAndLastName" />
+      </NameStyle>
+      <NameStyle>
+        <Name>Dunmer</Name>
+        <Description>The Dunmer, also known as Dark Elves, are the ash-skinned, typically red-eyed elven peoples of Morrowind.</Description>
+        <Template xsi:type="FirstAndLastName" />
+      </NameStyle>
+      <NameStyle>
+        <Name>Imperial</Name>
+        <Description>Also known as Cyrodiils, the well-educated and well-spoken Imperials are the natives of the civilized, cosmopolitan province of Cyrodiil.</Description>
+        <Template xsi:type="FirstAndLastName" />
+      </NameStyle>
+      <NameStyle>
+        <Name>Khajiit</Name>
+        <Description>Khajiit are cat-like people who come from Elsweyr, known for high intelligence and agility.</Description>
+        <Template xsi:type="NameOnly" />
+      </NameStyle>
+      <NameStyle>
+        <Name>Nord</Name>
+        <Description>The Nords are the children of the sky, a race of tall and fair-haired humans from Skyrim who are known for their incredible resistance to cold and magical frost.</Description>
+        <Template xsi:type="NameOnly" />
+      </NameStyle>
+      <NameStyle>
+        <Name>Reachman</Name>
+        <Description>The Reachmen are a tribal group of primarily Breton descent who inhabit the Reach in southwestern Skyrim and the neighboring Western Reach in the east of High Rock.</Description>
+        <Template xsi:type="NameOnly" />
+      </NameStyle>
+      <NameStyle>
+        <Name>Redguard</Name>
+        <Description>Redguards are the dark-skinned, wiry-haired people of Hammerfell.</Description>
+        <Template xsi:type="NameOnly" />
+      </NameStyle>
+    </Styles>
+  </NameCategory>
+  <NameCategory>
+    <Name>Real world</Name>
+    <Styles>
+      <NameStyle>
+        <Name>Polish</Name>
+        <Description>The Poles are a nation and West Slavic ethnic group native to Poland.</Description>
+        <Template xsi:type="GenderedLastNames" />
+      </NameStyle>
+    </Styles>
+  </NameCategory>
+  <NameCategory>
+    <Name>Historical</Name>
+    <Styles>
+      <NameStyle>
+        <Name>Anglo-Saxon</Name>
+        <Description>The Anglo-Saxons were the dominant people living in England from the mid-5th century AD until the Norman conquest in 1066.</Description>
+        <Template xsi:type="NameOnly" />
+      </NameStyle>
+      <NameStyle>
+        <Name>Briton</Name>
+        <Description>The Britons were Celtic people who inhabited Great Britain from the British Iron Age into the Middle Ages, at which point their culture and language diverged.</Description>
+        <Template xsi:type="NameOnly" />
+      </NameStyle>
+      <NameStyle>
+        <Name>Gaelic</Name>
+        <Description>The Gaels are an ethnolinguistic group native to northwestern Europe. They are associated with a branch of the Celtic languages comprising Irish, Manx and Scottish Gaelic.</Description>
+        <Template xsi:type="NameOnly" />
+      </NameStyle>
+      <NameStyle>
+        <Name>Norse</Name>
+        <Description>Norsemen are the group of people who spoke what is now called the Old Norse language between the 8th and 11th centuries.</Description>
+        <Template xsi:type="NameOnly" />
+      </NameStyle>
+      <NameStyle>
+        <Name>Mongol</Name>
+        <Description></Description>
+        <Template xsi:type="NameOnly" />
+      </NameStyle>
+    </Styles>
+  </NameCategory>
+</ArrayOfNameCategory>
