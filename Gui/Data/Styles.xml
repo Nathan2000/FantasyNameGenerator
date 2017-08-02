@@ -34,6 +34,11 @@
         <Template xsi:type="FirstAndLastName" />
       </NameStyle>
       <NameStyle>
+        <Name>Dwemer</Name>
+        <Description>The Dwemer, the "people of the deep", are a fabled "Lost Race" of Mer from Dwemereth, which mostly consisted of modern-day Morrowind.</Description>
+        <Template xsi:type="NameOnly" />
+      </NameStyle>
+      <NameStyle>
         <Name>Imperial</Name>
         <Description>Also known as Cyrodiils, the well-educated and well-spoken Imperials are the natives of the civilized, cosmopolitan province of Cyrodiil.</Description>
         <Template xsi:type="FirstAndLastName" />
@@ -47,6 +52,14 @@
         <Name>Nord</Name>
         <Description>The Nords are the children of the sky, a race of tall and fair-haired humans from Skyrim who are known for their incredible resistance to cold and magical frost.</Description>
         <Template xsi:type="NameOnly" />
+      </NameStyle>
+      <NameStyle>
+        <Name>Orsimer</Name>
+        <Description>Orcs, also called Orsimer or "Pariah Folk" in ancient times, are sophisticated, beastlike people of the Wrothgarian Mountains, Dragontail Mountains, Valenwood, and Orsinium.</Description>
+        <Template xsi:type="FirstAndLastName">
+          <FemaleLastNameFormat>gra-{0}</FemaleLastNameFormat>
+          <MaleLastNameFormat>gro-{0}</MaleLastNameFormat>
+        </Template>
       </NameStyle>
       <NameStyle>
         <Name>Reachman</Name>
@@ -95,7 +108,12 @@
       </NameStyle>
       <NameStyle>
         <Name>Mongol</Name>
-        <Description></Description>
+        <Description>The Mongols are tribal people living in Central Asia, who were united in 12th century by Genghis Khan and created the largest contiguous empire in world history.</Description>
+        <Template xsi:type="NameOnly" />
+      </NameStyle>
+      <NameStyle>
+        <Name>Slavic</Name>
+        <Description>Slavs are the largest Indo-European ethno-linguistic group in Europe. From the early 6th century they inhabit most of Central, Eastern and Southeastern Europe.</Description>
         <Template xsi:type="NameOnly" />
       </NameStyle>
     </Styles>

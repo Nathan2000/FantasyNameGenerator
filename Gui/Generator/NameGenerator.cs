@@ -33,12 +33,7 @@
         {
             this.settings = settings;
             this.occurences = this.GetOccurenceDictionary(names);
-
-            var lengths = this.GetNameLengths(names).OrderBy(p => p.Key).ToDictionary(p => p.Key, p => p.Value);
-            var mean = lengths.Sum(p => p.Value * p.Key) / (double)names.Count();
-            var variance = lengths.Sum(p => Math.Pow(p.Key - mean, 2.0) * p.Value) / names.Count();
-            var deviation = Math.Sqrt(variance);
-            this.nameDistribution = new NormalDistribution(mean, deviation);
+            this.nameDistribution = this.GetDistribution(names);
         }
 
         /// <summary>
@@ -47,20 +42,29 @@
         /// <returns>The <see cref="String"/>.</returns>
         public string GenerateName()
         {
-            var startingSequences = this.GetCumulativeDistribution(this.occurences.Where(p => p.Key.StartsWith("^")));
-            var randomNumber = Random.Next(startingSequences.Last().Value);
-            var randomSequence = startingSequences.First(p => p.Value >= randomNumber).Key;
-
             var expectedLength = (int)(this.nameDistribution.GetRandomNumber(Random) * this.settings.LengthModifier);
-
             var builder = new StringBuilder();
+            string randomSequence;
+            int randomNumber;
+
+            if (string.IsNullOrEmpty(this.settings.BeginWith))
+            {
+                var startingSequences = this.GetCumulativeDistribution(this.occurences.Where(p => p.Key.StartsWith("^")));
+                randomNumber = Random.Next(startingSequences.Last().Value);
+                randomSequence = startingSequences.First(p => p.Value >= randomNumber).Key;
+            }
+            else
+            {
+                randomSequence = "^" + this.settings.BeginWith;
+            }
+
             builder.Append(randomSequence);
 
             var endGeneration = randomSequence.EndsWith("$");
             for (var i = 0; i >= 100 || !endGeneration; ++i)
             {
                 var seed = randomSequence.Substring(1);
-                var sequences = this.occurences.Where(p => p.Key.StartsWith(seed)).ToList();
+                var sequences = this.GetStringsThatStartWith(this.occurences, seed);
 
                 if (this.settings.ControlLength)
                 {
@@ -70,7 +74,11 @@
                 var cumulativeDist = this.GetCumulativeDistribution(sequences);
                 randomNumber = Random.Next(cumulativeDist.Last().Value + 1);
                 randomSequence = cumulativeDist.First(p => p.Value >= randomNumber).Key;
-                builder.Append(randomSequence.Substring(this.settings.SequenceSize - 1));
+                builder.Append(
+                    randomSequence.Substring(
+                        !string.IsNullOrEmpty(this.settings.BeginWith) && i == 0
+                            ? this.settings.BeginWith.Length
+                            : this.settings.SequenceSize - 1));
 
                 if (randomSequence.EndsWith("$"))
                 {
@@ -88,14 +96,14 @@
         /// <param name="expectedLength">The expected name length.</param>
         /// <param name="sequences">The sequences to filter.</param>
         /// <returns>The <see cref="List{KeyValuePair}"/>.</returns>
-        private List<KeyValuePair<string, int>> ControlLength(int currentLength, int expectedLength, List<KeyValuePair<string, int>> sequences)
+        private Dictionary<string, int> ControlLength(int currentLength, int expectedLength, Dictionary<string, int> sequences)
         {
             if (currentLength >= expectedLength)
             {
                 // The name is longer than required. End it as soon as possible.
                 if (sequences.Any(s => s.Key.EndsWith("$")))
                 {
-                    sequences = sequences.Where(s => s.Key.EndsWith("$")).ToList();
+                    sequences = sequences.Where(s => s.Key.EndsWith("$")).ToDictionary(p => p.Key, p => p.Value);
                 }
             }
             else
@@ -103,7 +111,7 @@
                 // The name is shorter than required. Don't end it unless it's unavoidable.
                 if (sequences.Any(s => !s.Key.EndsWith("$")))
                 {
-                    sequences = sequences.Where(s => !s.Key.EndsWith("$")).ToList();
+                    sequences = sequences.Where(s => !s.Key.EndsWith("$")).ToDictionary(p => p.Key, p => p.Value);
                 }
             }
 
@@ -119,6 +127,21 @@
         {
             var sequenceCount = 0;
             return distribution.OrderByDescending(p => p.Value).ToDictionary(p => p.Key, p => sequenceCount += p.Value);
+        }
+
+        /// <summary>
+        /// Returns the distribution of name lengths.
+        /// </summary>
+        /// <param name="names">The names.</param>
+        /// <returns>The <see cref="IDistribution"/>.</returns>
+        private IDistribution GetDistribution(IEnumerable<string> names)
+        {
+            var properNames = names.Where(n => !n.StartsWith("-") && !n.EndsWith("-")).ToList();
+            var lengths = this.GetNameLengths(properNames).OrderBy(p => p.Key).ToDictionary(p => p.Key, p => p.Value);
+            var mean = lengths.Sum(p => p.Value * p.Key) / (double)properNames.Count;
+            var variance = lengths.Sum(p => Math.Pow(p.Key - mean, 2.0) * p.Value) / properNames.Count;
+            var deviation = Math.Sqrt(variance);
+            return new NormalDistribution(mean, deviation);
         }
 
         /// <summary>
@@ -155,7 +178,7 @@
             var result = new Dictionary<string, int>();
             foreach (var name in strings)
             {
-                var testedWord = "^" + name + "$";
+                string testedWord = this.Normalize(name);
                 for (var i = 0; i < testedWord.Length - this.settings.SequenceSize + 1; ++i)
                 {
                     var sequence = new string(testedWord.Skip(i).Take(this.settings.SequenceSize).ToArray());
@@ -168,6 +191,56 @@
                         result.Add(sequence, 1);
                     }
                 }
+            }
+
+            return result;
+        }
+
+        /// <summary>
+        /// Filters strings that begin with a given sequence. If there are no matching strings, returns the ones that start with ANYTHING.
+        /// </summary>
+        /// <param name="sourceStrings">The source strings.</param>
+        /// <param name="startingString">The starting string.</param>
+        /// <returns>The <see cref="Dictionary{String, Int}"/></returns>
+        private Dictionary<string, int> GetStringsThatStartWith(
+            Dictionary<string, int> sourceStrings,
+            string startingString)
+        {
+            var result = sourceStrings.Where(p => p.Key.StartsWith(startingString));
+
+            if (!result.Any())
+            {
+                // There are no strings that match. Try to use any string then.
+                result = sourceStrings.Where(p => !p.Key.StartsWith("^"));
+            }
+
+            return result.ToDictionary(p => p.Key, p => p.Value);
+        }
+
+        /// <summary>
+        /// Normalizes the name.
+        /// </summary>
+        /// <param name="name">The name.</param>
+        /// <returns>The <see cref="String"/>.</returns>
+        private string Normalize(string name)
+        {
+            string result = name;
+            if (result.StartsWith("-"))
+            {
+                result = result.Substring(1);
+            }
+            else
+            {
+                result = "^" + result;
+            }
+
+            if (result.EndsWith("-"))
+            {
+                result = result.Substring(0, result.Length - 1);
+            }
+            else
+            {
+                result = result + "$";
             }
 
             return result;

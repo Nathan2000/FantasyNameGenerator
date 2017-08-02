@@ -31,6 +31,7 @@
         public NamesViewModel()
         {
             this.Categories = this.LoadCategories();
+
             this.GeneratedNames = this.DefaultGeneratedNames();
             this.SelectedCategory = this.Categories.First();
             this.Settings = new NameSettings
@@ -40,7 +41,8 @@
                                     GenerateNameCount = 20,
                                     LengthModifier = 1.0,
                                     AddToResults = false,
-                                    ControlLength = true
+                                    ControlLength = true,
+                                    BeginWith = null
                                 };
 
             this.GenerateNamesCommand = new SimpleCommand

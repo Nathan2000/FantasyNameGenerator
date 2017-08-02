@@ -18,6 +18,7 @@
         <Menu Height="20" IsMainMenu="True" DockPanel.Dock="Top">
             <MenuItem Header="_File">
                 <MenuItem Header="_Generate" Command="{Binding GenerateNamesCommand}"/>
+                <MenuItem Header="_Save All" Command="Save"/>
                 <MenuItem Header="_Clear" Command="{Binding ClearNamesCommand}"/>
                 <Separator/>
                 <MenuItem Command="Close"/>
@@ -36,6 +37,7 @@
         <Grid>
             <ListBox Margin="164,10,10,10" ItemsSource="{Binding GeneratedNames}">
                 <ListBox.CommandBindings>
+                    <CommandBinding Command="Save" Executed="CommandBinding_OnSave" CanExecute="CommandBinding_OnCanSave"/>
                     <CommandBinding Command="Copy" Executed="CommandBinding_OnCopy" CanExecute="CommandBinding_OnCanCopy" />
                 </ListBox.CommandBindings>
                 <ListBox.ItemTemplate>
@@ -52,6 +54,7 @@
                 </ListBox.ItemTemplate>
                 <ListBox.ContextMenu>
                     <ContextMenu>
+                        <MenuItem Command="Save" Header="Save All"/>
                         <MenuItem Command="Copy"/>
                         <Separator/>
                         <MenuItem Header="Clear" Command="{Binding ClearNamesCommand}"/>
@@ -65,7 +68,7 @@
             <Slider HorizontalAlignment="Left" Margin="10,104,0,0" VerticalAlignment="Top" Width="120" Minimum="2" Maximum="10" Value="{Binding Settings.SequenceSize}" IsSnapToTickEnabled="True" TickPlacement="TopLeft" Visibility="Collapsed" />
             <TextBlock HorizontalAlignment="Left" Margin="135,112,0,0" TextWrapping="Wrap" Text="{Binding Settings.SequenceSize}" VerticalAlignment="Top" Width="24" Visibility="Collapsed"/>
             <Button Content="Generate" HorizontalAlignment="Left" Margin="84,0,0,9.8" Width="75" Command="{Binding GenerateNamesCommand}" Height="19" VerticalAlignment="Bottom"/>
-            <TextBlock HorizontalAlignment="Left" Margin="10,104,0,0" TextWrapping="Wrap" Text="{Binding SelectedCategory.SelectedStyle.Description}" VerticalAlignment="Top" Height="163" Width="149"/>
+            <TextBlock HorizontalAlignment="Left" Margin="10,104,0,33.8" TextWrapping="Wrap" Text="{Binding SelectedCategory.SelectedStyle.Description}" Width="149"/>
         </Grid>
     </DockPanel>
 </Window>

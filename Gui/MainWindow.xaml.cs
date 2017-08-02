@@ -15,6 +15,8 @@ using System.Windows.Shapes;
 
 namespace Gui
 {
+    using System.IO;
+
     using Gui.Model;
 
     using Microsoft.Win32;
@@ -46,6 +48,49 @@ namespace Gui
         {
             var window = (Window)sender;
             window.Close();
+        }
+
+        private void CommandBinding_OnCanSave(object sender, CanExecuteRoutedEventArgs e)
+        {
+            // TODO: This method isn't run when items are generated through the Generate button. Do something about it.
+            var listBox = (ListBox)sender;
+            e.CanExecute = listBox.HasItems;
+        }
+
+        private void CommandBinding_OnSave(object sender, ExecutedRoutedEventArgs e)
+        {
+            var listBox = (ListBox)sender;
+            SaveFileDialog dialog = new SaveFileDialog
+                                        {
+                                            Filter = "Text files|*.txt|All types|*.*",
+                                            AddExtension = true,
+                                            FileName = "Generated names",
+                                            DefaultExt = "txt",
+                                        };
+            var success = dialog.ShowDialog();
+            if (success == true)
+            {
+                try
+                {
+                    using (var file = new StreamWriter(dialog.OpenFile()))
+                    {
+                        foreach (var item in listBox.Items)
+                        {
+                            var name = item as NameData;
+                            if (name == null)
+                            {
+                                continue;
+                            }
+
+                            file.WriteLine(name.Name);
+                        }
+                    }
+                }
+                catch (IOException ex)
+                {
+                    MessageBox.Show("Error when writing to the " + dialog.FileName + " file.\r\n\r\n" + ex.Message);
+                }
+            }
         }
     }
 }
