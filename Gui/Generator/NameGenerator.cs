@@ -77,7 +77,7 @@
                 builder.Append(
                     randomSequence.Substring(
                         !string.IsNullOrEmpty(this.settings.BeginWith) && i == 0
-                            ? this.settings.BeginWith.Length
+                            ? Min(this.settings.BeginWith.Length, randomSequence.Length)
                             : this.settings.SequenceSize - 1));
 
                 if (randomSequence.EndsWith("$"))
@@ -90,28 +90,73 @@
         }
 
         /// <summary>
+        /// Returns the greater of two values.
+        /// </summary>
+        /// <param name="a">The first value.</param>
+        /// <param name="b">The second value.</param>
+        /// <returns>The <see cref="int"/>.</returns>
+        private static int Max(int a, int b)
+        {
+            return a > b ? a : b;
+        }
+
+        /// <summary>
+        /// Returns the lesser of two values.
+        /// </summary>
+        /// <param name="a">The first value.</param>
+        /// <param name="b">The second value.</param>
+        /// <returns>The <see cref="int"/>.</returns>
+        private static int Min(int a, int b)
+        {
+            return a < b ? a : b;
+        }
+
+        /// <summary>
+        /// Returns a value indicating whether the key of the sequence represents the ending of a word.
+        /// </summary>
+        /// <param name="sequence">The sequence of characters.</param>
+        /// <returns>The <see cref="bool"/>.</returns>
+        private static bool IsEnding(KeyValuePair<string, int> sequence)
+        {
+            return sequence.Key.EndsWith("$");
+        }
+
+        /// <summary>
+        /// Returns a value indicating whether the key of the sequence does not represent the ending of a word.
+        /// </summary>
+        /// <param name="sequence">The sequence of characters.</param>
+        /// <returns>The <see cref="bool"/>.</returns>
+        private static bool IsNotEnding(KeyValuePair<string, int> sequence)
+        {
+            return !IsEnding(sequence);
+        }
+
+        /// <summary>
         /// Limits the available options to the ones that allow to control length of the name.
         /// </summary>
         /// <param name="currentLength">The current name length.</param>
         /// <param name="expectedLength">The expected name length.</param>
         /// <param name="sequences">The sequences to filter.</param>
         /// <returns>The <see cref="List{KeyValuePair}"/>.</returns>
-        private Dictionary<string, int> ControlLength(int currentLength, int expectedLength, Dictionary<string, int> sequences)
+        private Dictionary<string, int> ControlLength(
+            int currentLength,
+            int expectedLength,
+            Dictionary<string, int> sequences)
         {
             if (currentLength >= expectedLength)
             {
                 // The name is longer than required. End it as soon as possible.
-                if (sequences.Any(s => s.Key.EndsWith("$")))
+                if (sequences.Any(IsEnding))
                 {
-                    sequences = sequences.Where(s => s.Key.EndsWith("$")).ToDictionary(p => p.Key, p => p.Value);
+                    sequences = sequences.Where(IsEnding).ToDictionary(p => p.Key, p => p.Value);
                 }
             }
             else
             {
                 // The name is shorter than required. Don't end it unless it's unavoidable.
-                if (sequences.Any(s => !s.Key.EndsWith("$")))
+                if (sequences.Any(IsNotEnding))
                 {
-                    sequences = sequences.Where(s => !s.Key.EndsWith("$")).ToDictionary(p => p.Key, p => p.Value);
+                    sequences = sequences.Where(IsNotEnding).ToDictionary(p => p.Key, p => p.Value);
                 }
             }
 

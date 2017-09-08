@@ -3,6 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:local="clr-namespace:Gui"
         xmlns:model="clr-namespace:Gui.Model"
+        xmlns:controls="clr-namespace:Gui.Controls"
         Title="Name Generator" Height="350" Width="525" MinHeight="350" MinWidth="525">
     <Window.Resources>
         <local:EnumToBooleanConverter x:Key="EnumToBooleanConverter"/>
@@ -14,7 +15,7 @@
     <Window.CommandBindings>
         <CommandBinding Command="Close" Executed="CommandBinding_OnClose"/>
     </Window.CommandBindings>
-    <DockPanel>
+    <DockPanel LastChildFill="True">
         <Menu Height="20" IsMainMenu="True" DockPanel.Dock="Top">
             <MenuItem Header="_File">
                 <MenuItem Header="_Generate" Command="{Binding GenerateNamesCommand}"/>
@@ -23,17 +24,66 @@
                 <Separator/>
                 <MenuItem Command="Close"/>
             </MenuItem>
-            <MenuItem Header="Options">
-                <StackPanel Orientation="Horizontal">
-                    <TextBlock Text="Generate "/>
-                    <TextBox Width="50" Text="{Binding Settings.GenerateNameCount}"/>
-                    <TextBlock Text=" names"/>
-                </StackPanel>
-                <MenuItem Header="Generate adds to list" IsCheckable="True" IsChecked="{Binding Settings.AddToResults}"/>
-                <MenuItem Header="Limit name length" IsCheckable="True" IsChecked="{Binding Settings.ControlLength}"/>
-            </MenuItem>
             <!--<MenuItem Header="About"/>-->
         </Menu>
+        <Expander Header="Options" Margin="0,10,0,10" ExpandDirection="Left" IsExpanded="False" HorizontalAlignment="Right" DockPanel.Dock="Right">
+            <Expander.HeaderTemplate>
+                <DataTemplate>
+                    <TextBlock Text="{Binding}">
+                        <TextBlock.LayoutTransform>
+                            <TransformGroup>
+                                <RotateTransform Angle="90"/>
+                            </TransformGroup>
+                        </TextBlock.LayoutTransform>
+                    </TextBlock>
+                </DataTemplate>
+            </Expander.HeaderTemplate>
+            <StackPanel>
+                <StackPanel.Resources>
+                    <Style TargetType="{x:Type CheckBox}">
+                        <Setter Property="Margin" Value="0,0,0,5"></Setter>
+                    </Style>
+                    <Style TargetType="{x:Type StackPanel}">
+                        <Setter Property="Margin" Value="0,0,0,5"></Setter>
+                    </Style>
+                </StackPanel.Resources>
+                <GroupBox Header="Name list">
+                    <StackPanel>
+                        <CheckBox Content="Generate adds to list" IsChecked="{Binding Settings.AddToResults}"/>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="Generate "/>
+                            <TextBox Width="50" Text="{Binding Settings.GenerateNameCount}"/>
+                            <TextBlock Text=" names"/>
+                        </StackPanel>
+                        <CheckBox Content="Sort names" IsChecked="{Binding Settings.SortNames}"/>
+                    </StackPanel>
+                </GroupBox>
+                <GroupBox Header="Name generation">
+                    <StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="Start with "/>
+                            <TextBox Text="{Binding Settings.BeginWith, UpdateSourceTrigger=PropertyChanged}" Width="50">
+
+                            </TextBox>
+                            <controls:CrossButton Height="16" Command="{Binding DeleteStartsWithCommand}"/>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="Sequence size"/>
+                            <TextBox Text="{Binding Settings.SequenceSize}" Width="50"/>
+                        </StackPanel>
+                    </StackPanel>
+                </GroupBox>
+                <GroupBox Header="Name length">
+                    <StackPanel>
+                        <CheckBox x:Name="ControlLengthCheckBox" Content="Control name length" IsChecked="{Binding Settings.ControlLength}"/>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="Length "/>
+                            <Slider Width="100" IsEnabled="{Binding IsChecked, ElementName=ControlLengthCheckBox}" Value="{Binding Settings.LengthModifier}" Minimum="0.5" Maximum="2" TickPlacement="BottomRight" IsSnapToTickEnabled="True" AutoToolTipPrecision="2" AutoToolTipPlacement="BottomRight" TickFrequency="0.25"/>
+                        </StackPanel>
+                    </StackPanel>
+                </GroupBox>
+            </StackPanel>
+        </Expander>
         <Grid>
             <ListBox Margin="164,10,10,10" ItemsSource="{Binding GeneratedNames}">
                 <ListBox.CommandBindings>

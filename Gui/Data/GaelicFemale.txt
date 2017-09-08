@@ -23,13 +23,17 @@ Aróc
 Athracht
 Aíbinn
 Aífe
+Ban
 Banbha
 Barrdub
+Be Bhionn
 Be Bhionn
 Beag
 Bearach
 Belocc
 Ben Mide
+Ben Mide
+Ben Muman
 Ben Muman
 Bil
 Blinne
@@ -41,11 +45,13 @@ Bríghid
 Brónach
 Báine
 Bé Fáil
+Bé Fáil
 Bébhinn
 Bébinn
 Bél
 Cacht
 Caillech
+Caillech Finnen
 Caillech Finnen
 Cainnech
 Caoilfhionn
@@ -92,6 +98,7 @@ Dailfind
 Dairine
 Damhnait
 Dar Cárthaind
+Dar Cárthaind
 Daráine
 Dealbhnait
 Dealla
@@ -102,6 +109,9 @@ Dechtire
 Deirbhile
 Deirdre
 Deirdriu
+Der
+Der Bforgaill
+Der Bforgaill
 Der Bforgaill
 Der Bforgaill
 Der Draigen
@@ -112,13 +122,18 @@ Dianaim
 Doireand
 Doirend
 Domnaill
+Draigen
 Draighean
 Dron
 Dubchoblaig
 Dubh
 Dubh Essa
 Dubh Essa
+Dubh Essa
+Dubh Essa
 Dubh Lacha
+Dubh Lacha
+Dubh Lemna
 Dubh Lemna
 Dubhchobhlaigh
 Dubhgilla
@@ -206,6 +221,7 @@ Liadan
 Liamhain
 Life
 Luiseach
+Lí
 Lí Ban
 Líadan
 Lígach
@@ -235,13 +251,18 @@ Muirin
 Muirne
 Muirín
 Máel Etich
+Máel Etich
+Máel Fabaill
 Máel Fabaill
 Máel Mide
+Máel Mide
+Máel Muire
 Máel Muire
 Móen
 Móirne
 Móirín
 Mór
+Mór Muman
 Mór Muman
 Naoise
 Naomh

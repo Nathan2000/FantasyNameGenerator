@@ -21,11 +21,6 @@
     public class NamesViewModel
     {
         /// <summary>
-        /// The random numbers generator.
-        /// </summary>
-        private readonly Random random = new Random();
-
-        /// <summary>
         /// Initializes a new instance of the <see cref="NamesViewModel"/> class.
         /// </summary>
         public NamesViewModel()
@@ -58,6 +53,14 @@
                                       CanExecuteMethod = p => this.GeneratedNames.Any(),
                                       ExecuteMethod = parameter => this.GeneratedNames.Clear()
                                   };
+            this.DeleteStartsWithCommand = new SimpleCommand
+                                               {
+                                                   CanExecuteMethod = p => !string.IsNullOrEmpty(this.Settings.BeginWith),
+                                                   ExecuteMethod = p =>
+                                                       {
+                                                           this.Settings.BeginWith = null;
+                                                       }
+                                               };
         }
 
         public ObservableCollection<NameCategory> Categories { get; set; }
@@ -67,6 +70,7 @@
 
         public ICommand GenerateNamesCommand { get; set; }
         public ICommand ClearNamesCommand { get; set; }
+        public ICommand DeleteStartsWithCommand { get; set; }
 
         /// <summary>
         /// Generates a list of names.
@@ -86,6 +90,16 @@
             {
                 var name = template.GenerateName(generators);
                 this.GeneratedNames.Add(name);
+            }
+
+            if (this.Settings.SortNames)
+            {
+                var sorted = this.GeneratedNames.OrderBy(n => n.Name).ToList();
+                this.GeneratedNames.Clear();
+                foreach (var name in sorted)
+                {
+                    this.GeneratedNames.Add(name);
+                }
             }
         }
 
@@ -124,12 +138,6 @@
                                             new NameStyle("Altmer") { Template = new NameOnly(), Description = "This is a description box" },
                                             new NameStyle("Khajiit") { Template = new NameOnly() },
                                             new NameStyle("Imperial") { Template = new FirstAndLastName() }
-                                        }),
-                                new NameCategory(
-                                    "Real world",
-                                    new ObservableCollection<NameStyle>
-                                        {
-                                            new NameStyle("Polish") { Template = new GenderedLastNames() }
                                         })
                             };
             }
@@ -150,5 +158,16 @@
         }
 
         #endregion
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        private void NotifyPropertyChanged(string propertyName)
+        {
+            PropertyChangedEventHandler handler = this.PropertyChanged;
+            if (handler != null)
+            {
+                handler(this, new PropertyChangedEventArgs(propertyName));
+            }
+        }
     }
 }

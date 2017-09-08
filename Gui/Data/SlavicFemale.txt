@@ -6,10 +6,13 @@ Bogdana
 Bogna
 Bogumila
 Boguslava
+Borislava
 Božena
 Brana
+Branimira
 Branislava
 Branka
+Braslava
 Cveta
 Cvetana
 Cvetimira
@@ -28,11 +31,13 @@ Dragana
 Dragica
 Drahomíra
 Drenusha
+Drzislava
 Dubravka
 Dunja
 Dusa
 Duša
 Goca
+Gojslava
 Gorana
 Inna
 Irina
@@ -47,6 +52,7 @@ Jasmina
 Jasna
 Kalina
 Kazimira
+Kresimira
 Kseniya
 Kvetana
 Kvetava
@@ -75,6 +81,8 @@ Mira
 Mirjana
 Mirna
 Miroslava
+Mislava
+Mutimira
 Nada
 Nadežda
 Nadia
@@ -83,6 +91,7 @@ Nadžeja
 Natasha
 Nevena
 Nina
+Ninoslava
 Oksana
 Olga
 Olha
@@ -91,6 +100,7 @@ Radica
 Radmila
 Radushka
 Raisa
+Ratimira
 Roksana
 Ruslana
 Ruža
@@ -111,16 +121,20 @@ Snježana
 Sobena
 Stanislava
 Sveta
+Svetislava
 Svetlana
 Svitlana
 Tanja
 Tatiana
 Tijana
+Tomislava
+Trpimira
 Vena
 Venca
 Vera
 Vesela
 Vesna
+Viseslava
 Vjena
 Vjenceslava
 Vjenka
@@ -132,6 +146,7 @@ Vladimira
 Vladislava
 Vladka
 Vojislava
+Vojnomira
 Věnceslava
 Zdenka
 Zdesa
@@ -143,6 +158,7 @@ Zlata
 Zora
 Zorica
 Zorka
+Zvonimira
 Žana
 Žanna
 Željka

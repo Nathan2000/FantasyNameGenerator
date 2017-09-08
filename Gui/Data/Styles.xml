@@ -73,7 +73,7 @@
       </NameStyle>
     </Styles>
   </NameCategory>
-  <NameCategory>
+  <!--<NameCategory>
     <Name>Real world</Name>
     <Styles>
       <NameStyle>
@@ -82,7 +82,7 @@
         <Template xsi:type="GenderedLastNames" />
       </NameStyle>
     </Styles>
-  </NameCategory>
+  </NameCategory>-->
   <NameCategory>
     <Name>Historical</Name>
     <Styles>
@@ -92,8 +92,18 @@
         <Template xsi:type="NameOnly" />
       </NameStyle>
       <NameStyle>
+        <Name>Aztec</Name>
+        <Description>Aztec culture, also known as Mexica culture, was a Mesoamerican culture that flourished in Central Mexico in the period of 1300-1521.</Description>
+        <Template xsi:type="NameOnly" />
+      </NameStyle>
+      <NameStyle>
         <Name>Briton</Name>
         <Description>The Britons were Celtic people who inhabited Great Britain from the British Iron Age into the Middle Ages, at which point their culture and language diverged.</Description>
+        <Template xsi:type="NameOnly" />
+      </NameStyle>
+      <NameStyle>
+        <Name>Egyptian</Name>
+        <Description></Description>
         <Template xsi:type="NameOnly" />
       </NameStyle>
       <NameStyle>
@@ -102,13 +112,33 @@
         <Template xsi:type="NameOnly" />
       </NameStyle>
       <NameStyle>
-        <Name>Norse</Name>
-        <Description>Norsemen are the group of people who spoke what is now called the Old Norse language between the 8th and 11th centuries.</Description>
+        <Name>Gaulish</Name>
+        <Description>The Gauls were Celtic peoples inhabiting Gaul in the Iron Age and the Roman period (roughly from the 5th century BC to the 5th century AD).</Description>
+        <Template xsi:type="NameOnly" />
+      </NameStyle>
+      <NameStyle>
+        <Name>Greek</Name>
+        <Description>The Greeks or Hellenes are an ethnic group native to Greece, Cyprus, southern Albania, Turkey, Sicily, Egypt and, to a lesser extent, other countries surrounding the Mediterranean Sea.</Description>
+        <Template xsi:type="NameOnly" />
+      </NameStyle>
+      <NameStyle>
+        <Name>Indian</Name>
+        <Description></Description>
         <Template xsi:type="NameOnly" />
       </NameStyle>
       <NameStyle>
         <Name>Mongol</Name>
         <Description>The Mongols are tribal people living in Central Asia, who were united in 12th century by Genghis Khan and created the largest contiguous empire in world history.</Description>
+        <Template xsi:type="NameOnly" />
+      </NameStyle>
+      <NameStyle>
+        <Name>Norse</Name>
+        <Description>Norsemen are the group of people who spoke what is now called the Old Norse language between the 8th and 11th centuries.</Description>
+        <Template xsi:type="NameOnly" />
+      </NameStyle>
+      <NameStyle>
+        <Name>Persian</Name>
+        <Description></Description>
         <Template xsi:type="NameOnly" />
       </NameStyle>
       <NameStyle>

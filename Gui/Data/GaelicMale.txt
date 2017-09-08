@@ -77,6 +77,7 @@ Ceallach
 Cearbhall
 Cellach
 Cenn Fáelad
+Cenn Fáelad
 Cennétig
 Cerball
 Cernach
@@ -122,9 +123,14 @@ Curnán
 Cuán
 Cáirthenn
 Cú Maige
+Cú Maige
+Cú Mara
 Cú Mara
 Cú Roí
+Cú Roí
 Cú Slébe
+Cú Slébe
+Cú Ulad
 Cú Ulad
 Cúmhaí
 Cúán
@@ -143,6 +149,7 @@ Diarmaid
 Diarmait
 Domhnall
 Domnall
+Donn Slébe
 Donn Slébe
 Donnchad
 Donnchadh
@@ -232,13 +239,22 @@ Gaimhreadhán
 Garalt
 Garbhán
 Gilla Brigde
+Gilla Brigde
+Gilla Brénainn
 Gilla Brénainn
 Gilla Ciaráin
+Gilla Ciaráin
+Gilla Comgaill
 Gilla Comgaill
 Gilla Críst
+Gilla Críst
+Gilla Cáemgein
 Gilla Cáemgein
 Gilla Mochutu
+Gilla Mochutu
 Gilla Pátraic
+Gilla Pátraic
+Gilla na Náem
 Gilla na Náem
 Gilleagán
 Glaisne
@@ -277,10 +293,13 @@ Lorcán
 Lugaid
 Lughaidh
 Lóegaire
-Mac Raith
+Mac
+Mac Bethad
 Mac Bethad
 Mac Laisre
+Mac Laisre
 Mac Nisse
+Mac Raith
 Mac Táil
 Maeleachlainn
 Mainchín
@@ -292,6 +311,7 @@ Mathgamain
 Meallán
 Mel
 Miach
+Mithig
 Mochta
 Molaisse
 Morand
@@ -308,22 +328,39 @@ Muirgius
 Murchad
 Murchadh
 Murchú
-Máel Mithig
+Máel
+Máel Brigde
 Máel Brigde
 Máel Brénainn
+Máel Brénainn
+Máel Ciaráin
 Máel Ciaráin
 Máel Coluim
+Máel Coluim
+Máel Dúin
 Máel Dúin
 Máel Finnén
+Máel Finnén
 Máel Fábaill
+Máel Fábaill
+Máel Mithig
+Máel Muad
 Máel Muad
 Máel Muire
+Máel Muire
+Máel Máedóc
 Máel Máedóc
 Máel Mórda
+Máel Mórda
+Máel Pátraic
 Máel Pátraic
 Máel Ruanaid
+Máel Ruanaid
+Máel Sechnaill
 Máel Sechnaill
 Máel Tuili
+Máel Tuili
+Máel Ísu
 Máel Ísu
 Máelodor
 Máelán
@@ -356,6 +393,7 @@ Orthanach
 Osgar
 Osán
 Ragallach
+Raith
 Rebachán
 Rechtabra
 Robertach
