@@ -1,0 +1,11 @@
+{
+  "description": "Aztec culture, also known as Mexica culture, was a Mesoamerican culture that flourished in Central Mexico in the period of 1300-1521.",
+  "template": "{name}",
+  "components": {
+    "name": {
+      "type": "Markov",
+      "male": "male.txt",
+      "female": "female.txt"
+    }
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "description": "The Anglo-Saxons were the dominant people living in England from the mid-5th century AD until the Norman conquest in 1066.",
+  "template": "{name}",
+  "components": {
+    "name": {
+      "type": "Markov",
+      "male": "male.txt",
+      "female": "female.txt"
+    }
+  }
+}

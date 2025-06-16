@@ -1,0 +1,11 @@
+{
+  "description": "The Reachmen are a tribal group of primarily Breton descent who inhabit the Reach in southwestern Skyrim and the neighboring Western Reach in the east of High Rock.",
+  "template": "{name}",
+  "components": {
+    "name": {
+      "type": "Markov",
+      "male": "male.txt",
+      "female": "female.txt"
+    }
+  }
+}

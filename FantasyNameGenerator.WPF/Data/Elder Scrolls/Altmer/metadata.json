@@ -1,0 +1,11 @@
+{
+  "description": "The Altmer, or High Elves, are a tall, golden-skinned race, hailing from Summerset Isle.",
+  "template": "{name}",
+  "components": {
+    "name": {
+      "type": "Markov",
+      "male": "male.txt",
+      "female": "female.txt"
+    }
+  }
+}

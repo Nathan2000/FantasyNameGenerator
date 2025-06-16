@@ -1,0 +1,11 @@
+{
+  "description": "Argonians are the reptilian natives of Black Marsh, a vast swampland province in southeastern Tamriel.",
+  "template": "{name}",
+  "components": {
+    "name": {
+      "type": "Markov",
+      "male": "male.txt",
+      "female": "female.txt"
+    }
+  }
+}

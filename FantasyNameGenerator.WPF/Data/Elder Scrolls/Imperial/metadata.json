@@ -1,0 +1,16 @@
+{
+  "description": "Also known as Cyrodiils, the well-educated and well-spoken Imperials are the natives of the civilized, cosmopolitan province of Cyrodiil.",
+  "template": "{name} {surname}",
+  "components": {
+    "name": {
+      "type": "Markov",
+      "male": "male.txt",
+      "female": "female.txt"
+    },
+    "surname": {
+      "type": "Markov",
+      "male": "surname.txt",
+      "female": "surname.txt"
+    }
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "description": "Bretons are the human descendants of the Aldmeri-Nedic Manmer of the Merethic Era and are now the inhabitants of the province of High Rock.",
+  "template": "{name} {surname}",
+  "components": {
+    "name": {
+      "type": "Markov",
+      "male": "male.txt",
+      "female": "female.txt"
+    },
+    "surname": {
+      "type": "Markov",
+      "male": "surname.txt",
+      "female": "surname.txt"
+    }
+  }
+}

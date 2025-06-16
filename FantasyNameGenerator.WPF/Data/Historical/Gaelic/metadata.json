@@ -1,0 +1,11 @@
+{
+  "description": "The Gaels are an ethnolinguistic group native to northwestern Europe. They are associated with a branch of the Celtic languages comprising Irish, Manx and Scottish Gaelic.",
+  "template": "{name}",
+  "components": {
+    "name": {
+      "type": "Markov",
+      "male": "male.txt",
+      "female": "female.txt"
+    }
+  }
+}

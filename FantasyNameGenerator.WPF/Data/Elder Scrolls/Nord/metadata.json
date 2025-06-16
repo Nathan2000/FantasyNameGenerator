@@ -1,0 +1,11 @@
+{
+  "description": "The Nords are the children of the sky, a race of tall and fair-haired humans from Skyrim who are known for their incredible resistance to cold and magical frost.",
+  "template": "{name}",
+  "components": {
+    "name": {
+      "type": "Markov",
+      "male": "male.txt",
+      "female": "female.txt"
+    }
+  }
+}

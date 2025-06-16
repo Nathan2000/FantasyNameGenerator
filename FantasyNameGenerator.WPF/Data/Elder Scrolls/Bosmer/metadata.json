@@ -1,0 +1,11 @@
+{
+  "description": "The Bosmer are the Elven clan-folk of Valenwood, a forested province in southwestern Tamriel.",
+  "template": "{name}",
+  "components": {
+    "name": {
+      "type": "Markov",
+      "male": "male.txt",
+      "female": "female.txt"
+    }
+  }
+}

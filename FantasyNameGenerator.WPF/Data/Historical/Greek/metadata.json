@@ -1,0 +1,11 @@
+{
+  "description": "The Greeks or Hellenes are an ethnic group native to Greece, Cyprus, southern Albania, Turkey, Sicily, Egypt and, to a lesser extent, other countries surrounding the Mediterranean Sea.",
+  "template": "{name}",
+  "components": {
+    "name": {
+      "type": "Markov",
+      "male": "male.txt",
+      "female": "female.txt"
+    }
+  }
+}

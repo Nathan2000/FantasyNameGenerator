@@ -1,0 +1,16 @@
+{
+  "description": "The Ashlanders, also called the Velothi after the prophet Veloth, are Dunmeri nomads that traditionally hail from Morrowind's wilderness.",
+  "template": "{name} {surname}",
+  "components": {
+    "name": {
+      "type": "Markov",
+      "male": "male.txt",
+      "female": "female.txt"
+    },
+    "surname": {
+      "type": "Markov",
+      "male": "surname.txt",
+      "female": "surname.txt"
+    }
+  }
+}

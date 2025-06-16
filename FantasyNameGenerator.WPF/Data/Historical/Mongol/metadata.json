@@ -1,0 +1,11 @@
+{
+  "description": "The Mongols are tribal people living in Central Asia, who were united in 12th century by Genghis Khan and created the largest contiguous empire in world history.",
+  "template": "{name}",
+  "components": {
+    "name": {
+      "type": "Markov",
+      "male": "male.txt",
+      "female": "female.txt"
+    }
+  }
+}

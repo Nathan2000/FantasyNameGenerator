@@ -1,0 +1,11 @@
+{
+  "description": "The Dwemer, the \"people of the deep\", are a fabled \"Lost Race\" of Mer from Dwemereth, which mostly consisted of modern-day Morrowind.",
+  "template": "{name}",
+  "components": {
+    "name": {
+      "type": "Markov",
+      "male": "male.txt",
+      "female": "female.txt"
+    }
+  }
+}

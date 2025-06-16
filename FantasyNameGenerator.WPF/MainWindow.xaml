@@ -1,0 +1,84 @@
+﻿<Window
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:FantasyNameGenerator.WPF"
+        xmlns:vm="clr-namespace:FantasyNameGenerator.WPF.ViewModels"
+        xmlns:Converters="clr-namespace:FantasyNameGenerator.WPF.Converters"
+        xmlns:Metadata="clr-namespace:FantasyNameGenerator.Lib.Metadata;assembly=FantasyNameGenerator.Lib"
+        x:Class="FantasyNameGenerator.WPF.MainWindow"
+        mc:Ignorable="d"
+        Title="Name Generator" Height="450" Width="800"
+        MinHeight="300" MinWidth="400"
+        >
+    <Window.Resources>
+        <Converters:EnumToBooleanConverter x:Key="EnumToBooleanConverter"/>
+    </Window.Resources>
+    <Window.DataContext>
+        <vm:NamesViewModel />
+    </Window.DataContext>
+    <Window.CommandBindings>
+        <CommandBinding Command="Close" Executed="CommandBinding_OnClose"/>
+    </Window.CommandBindings>
+    <DockPanel LastChildFill="True">
+        <Menu Height="20" IsMainMenu="True" DockPanel.Dock="Top">
+            <MenuItem Header="_File">
+                <MenuItem Header="_Generate" Command="{Binding GenerateCommand}"/>
+                <Separator/>
+                <MenuItem Command="Close"/>
+            </MenuItem>
+        </Menu>
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="150"/>
+                <ColumnDefinition Width="5"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <StackPanel>
+                <ComboBox Margin="10,10,10,0"
+                      ItemsSource="{Binding Categories}" SelectedItem="{Binding SelectedCategory, Mode=TwoWay}"
+                      DisplayMemberPath="Name"/>
+                <ComboBox Margin="10,5,10,0"
+                      ItemsSource="{Binding SelectedCategory.Cultures}" SelectedValue="{Binding SelectedCulture, Mode=TwoWay}"
+                      DisplayMemberPath="Name"/>
+                <GroupBox Header="Options" Margin="10,5,10,0">
+                    <StackPanel>
+                        <RadioButton Content="Male" HorizontalAlignment="Left" Height="16"
+                                     IsChecked="{Binding Gender, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:Static Metadata:Gender.Male}}"/>
+                        <RadioButton Content="Female" HorizontalAlignment="Left" Height="16"
+                                     IsChecked="{Binding Gender, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:Static Metadata:Gender.Female}}"/>
+                        <TextBlock Text="Sequence size"/>
+                        <Slider Minimum="1" Maximum="10" IsSnapToTickEnabled="True" TickPlacement="TopLeft"
+                                AutoToolTipPlacement="TopLeft" AutoToolTipPrecision="0"
+                                Value="{Binding SequenceSize}"/>
+                    </StackPanel>
+                </GroupBox>
+                <TextBlock Margin="10,10,10,0"
+                           TextWrapping="Wrap" Text="{Binding SelectedCulture.Description}"/>
+            </StackPanel>
+            <Button Content="Generate" Margin="10,0,10,10" Height="20" VerticalAlignment="Bottom"
+                    Command="{Binding GenerateCommand}"/>
+            <GridSplitter Grid.Column="1" HorizontalAlignment="Stretch"/>
+            <ListBox Grid.Column="2" ItemsSource="{Binding Names}">
+                <ListBox.CommandBindings>
+                    <CommandBinding Command="Save" Executed="CommandBinding_OnSave" CanExecute="CommandBinding_OnCanSave"/>
+                    <CommandBinding Command="Copy" Executed="CommandBinding_OnCopy" CanExecute="CommandBinding_OnCanCopy" />
+                </ListBox.CommandBindings>
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <TextBlock Text="{Binding}"/>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+                <ListBox.ContextMenu>
+                    <ContextMenu>
+                        <MenuItem Command="Save" Header="Save All"/>
+                        <MenuItem Command="Copy"/>
+                        <Separator/>
+                        <MenuItem Header="Clear" Command="{Binding ClearNamesCommand}"/>
+                    </ContextMenu>
+                </ListBox.ContextMenu>
+            </ListBox>
+        </Grid>
+    </DockPanel>
+</Window>

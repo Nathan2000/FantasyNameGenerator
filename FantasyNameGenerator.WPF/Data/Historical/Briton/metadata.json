@@ -1,0 +1,11 @@
+{
+  "description": "The Britons were Celtic people who inhabited Great Britain from the British Iron Age into the Middle Ages, at which point their culture and language diverged.",
+  "template": "{name}",
+  "components": {
+    "name": {
+      "type": "Markov",
+      "male": "male.txt",
+      "female": "female.txt"
+    }
+  }
+}

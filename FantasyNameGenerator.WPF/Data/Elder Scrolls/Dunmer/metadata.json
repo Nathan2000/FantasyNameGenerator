@@ -1,0 +1,16 @@
+{
+  "description": "The Dunmer, also known as Dark Elves, are the ash-skinned, typically red-eyed elven peoples of Morrowind.",
+  "template": "{name} {surname}",
+  "components": {
+    "name": {
+      "type": "Markov",
+      "male": "male.txt",
+      "female": "female.txt"
+    },
+    "surname": {
+      "type": "Markov",
+      "male": "surname.txt",
+      "female": "surname.txt"
+    }
+  }
+}
