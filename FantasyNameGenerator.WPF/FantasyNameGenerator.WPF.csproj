@@ -6,7 +6,17 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <UseWPF>true</UseWPF>
+    <AssemblyName>FantasyNameGenerator</AssemblyName>
+    <Authors>Nathan2000</Authors>
+    <RepositoryUrl>https://github.com/Nathan2000/FantasyNameGenerator</RepositoryUrl>
   </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="MinVer" Version="6.0.0">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\FantasyNameGenerator.Lib\FantasyNameGenerator.Lib.csproj" />

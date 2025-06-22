@@ -9,7 +9,7 @@
         xmlns:Metadata="clr-namespace:FantasyNameGenerator.Lib.Metadata;assembly=FantasyNameGenerator.Lib"
         x:Class="FantasyNameGenerator.WPF.MainWindow"
         mc:Ignorable="d"
-        Title="Name Generator" Height="450" Width="800"
+        Title="Fantasy Name Generator" Height="450" Width="800"
         MinHeight="300" MinWidth="400"
         >
     <Window.Resources>
