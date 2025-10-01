@@ -1,0 +1,187 @@
+﻿@page "/"
+@using FantasyNameGenerator.Lib.Domain
+@inject INameCultureProvider service
+@inject IJSRuntime JS
+
+<div class="d-flex" style="height: 100vh;">
+    <div class="bg-light p-3 border-end" style="width: 350px;">
+
+        <div class="mb-3">
+            <label class="form-label" for="selectCategory">Category</label>
+            <select @onchange="OnCategoryChanged" id="selectCategory" class="form-select" aria-label="Category">
+                @foreach (var (categoryName, _) in Categories)
+                {
+                    <option value="@categoryName">@categoryName</option>
+                }
+            </select>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label" for="selectCulture">Culture</label>
+            <select @onchange="OnCultureChanged" value="@SelectedCultureName" id="selectCulture" class="form-select" aria-label="Culture">
+                @foreach (var (cultureName, _) in Cultures)
+                {
+                    <option value="@cultureName">@cultureName</option>
+                }
+            </select>
+        </div>
+
+        <fieldset>
+            <legend>Options</legend>
+
+            <div class="mb-3">
+                <InputRadioGroup @bind-Value="Gender">
+                    <div class="form-check">
+                        <InputRadio Value="Gender.Male" class="form-check-input" id="radioMale" />
+                        <label class="form-check-label" for="radioMale">Male</label>
+                    </div>
+                    <div class="form-check">
+                        <InputRadio Value="Gender.Female" class="form-check-input" id="radioFemale" />
+                        <label class="form-check-label" for="radioFemale">Female</label>
+                    </div>
+                </InputRadioGroup>
+            </div>
+
+            <div class="mb-3 position-relative">
+                <label class="form-label">Sequence Size</label>
+                <div class="position-relative">
+                    <input type="range" class="form-range" min="1" max="10" step="1" @bind="SequenceSize" id="rangeSequence" />
+                    <div class="position-absolute top-0 end-0 translate-middle-y text-muted small">@SequenceSize</div>
+                </div>
+            </div>
+
+        </fieldset>
+
+        <div class="mb-3">@Description</div>
+
+        <div class="btn-group">
+            <button @onclick="OnGenerate" disabled="@IsGenerateDisabled" type="button" class="btn btn-primary">Generate</button>
+            <button type="button" class="btn btn-primary dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown" aria-expanded="false">
+                <span class="visually-hidden">Toggle Dropdown</span>
+            </button>
+            <ul class="dropdown-menu">
+                <li><a @onclick="OnGenerate10" class="dropdown-item" href="#">Generate 10</a></li>
+            </ul>
+        </div>
+        <button @onclick="OnClearAll" type="button" class="btn btn-outline-danger"><i class="bi bi-trash3-fill"></i> Clear All</button>
+    </div>
+
+    <div class="flex-grow-1 d-flex flex-column">
+        <div class="flex-grow-1 overflow-auto p-3">
+            <ul class="list-group">
+                @foreach (var name in GeneratedNames)
+                {
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        <span>@name.FullName</span>
+                        <button @onclick="() => RemoveName(name)" @onclick:stopPropagation="true" class="btn btn-sm btn-outline-danger ms-auto"><i class="bi bi-trash3-fill"></i></button>
+                    </li>
+                }
+            </ul>
+
+            @if (GeneratedNames.Any())
+            {
+                <button @onclick="OnDownload" class="btn btn-primary btn-sm"><i class="bi bi-download"></i> Download</button>
+            }
+        </div>
+    </div>
+</div>
+
+@code
+{
+    private IDictionary<string, NameCategory> Categories = new Dictionary<string, NameCategory>();
+    private IDictionary<string, NameCulture> Cultures = new Dictionary<string, NameCulture>();
+    private List<GeneratedName> GeneratedNames = [];
+
+    public Gender Gender { get; set; }
+    public int SequenceSize { get; set; } = 3;
+
+    private NameCategory? _selectedCategory;
+    private NameCulture? _selectedCulture;
+    private NameCultureMetadata? _metadata;
+
+    public string? SelectedCultureName => _selectedCulture?.Name;
+    public string Description => _metadata?.Description ?? string.Empty;
+    public bool IsGenerateDisabled => _metadata is null;
+
+    private async Task OnCategoryChanged(ChangeEventArgs args)
+    {
+        var value = args.Value as string;
+        if (value == _selectedCategory?.Name)
+            return;
+        _selectedCategory = value is not null && Categories.TryGetValue(value, out var category) ? category : null;
+        Cultures = _selectedCategory?.Cultures ?? [];
+        await OnCultureChanged(new ChangeEventArgs { Value = Cultures.FirstOrDefault().Key });
+    }
+
+    private async Task OnCultureChanged(ChangeEventArgs args)
+    {
+        var value = args.Value as string;
+        if (value == _selectedCulture?.Name)
+            return;
+        _selectedCulture = value is not null && Cultures.TryGetValue(value, out var culture) ? culture : null;
+        if (_selectedCategory is not null && _selectedCulture is not null)
+            _metadata = await service.GetCultureMetadataAsync(_selectedCategory.Name, _selectedCulture.Name);
+        else
+            _metadata = null;
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        Categories = await service.GetAllCategoriesAsync();
+        await OnCategoryChanged(new ChangeEventArgs { Value = Categories.FirstOrDefault().Key });
+    }
+
+    private void OnGenerate(MouseEventArgs args)
+    {
+        if (_metadata != null)
+        {
+            var options = new NameGenerationOptions
+            {
+                Gender = Gender,
+                SequenceSize = SequenceSize
+            };
+            var name = _metadata.GenerateName(options);
+            GeneratedNames.Add(name);
+        }
+    }
+
+    private void OnGenerate10(MouseEventArgs args)
+    {
+        const int RepeatCount = 10;
+        if (_metadata != null)
+        {
+            var options = new NameGenerationOptions
+            {
+                Gender = Gender,
+                SequenceSize = SequenceSize
+            };
+            for (int i = 0; i < RepeatCount; i++)
+            {
+                var name = _metadata.GenerateName(options);
+                GeneratedNames.Add(name);
+            }
+        }
+    }
+
+    private void OnClearAll(MouseEventArgs args)
+    {
+        GeneratedNames.Clear();
+    }
+
+    private async Task OnDownload(MouseEventArgs args)
+    {
+        var content = string.Join(Environment.NewLine, GeneratedNames.Select(n => n.FullName));
+        var bytes = System.Text.Encoding.UTF8.GetBytes(content);
+        var base64 = Convert.ToBase64String(bytes);
+
+        var timestamp = DateTime.Now.ToString("yyyyMMddHHmmss");
+        var filename = $"names_{timestamp}.txt";
+
+        await JS.InvokeVoidAsync("downloadFile", filename, base64);
+    }
+
+    private void RemoveName(GeneratedName name)
+    {
+        GeneratedNames.Remove(name);
+    }
+}
