@@ -2,11 +2,12 @@ name: Build FantasyNameGenerator
 
 on:
   push:
-    branches: [ "master", "task/create_workflow" ]
+    branches: [ "master" ]
     tags:
     - '[0-9]+.[0-9]+.[0-9]+'
   pull_request:
-    branches-ignore: [ "master" ]
+    branches: [ "*" ]
+  workflow_dispatch:
 
 env:
   Zip_Filename: FantasyNameGenerator.zip
@@ -18,10 +19,18 @@ jobs:
         configuration: [Debug, Release]
     runs-on: windows-latest
     env:
-      Wpf_App: FantasyNameGenerator.WPF\FantasyNameGenerator.WPF.csproj
+      Wpf_Dir: FantasyNameGenerator.WPF
+      Wpf_App: FantasyNameGenerator.WPF/FantasyNameGenerator.WPF.csproj
+      Blazor_Dir: FantasyNameGenerator.Blazor
+      Blazor_App: FantasyNameGenerator.Blazor/FantasyNameGenerator.Blazor.csproj
       Configuration: ${{ matrix.configuration }}
       Runtime: win-x64
-      Output_Dir: publish
+      Wpf_Output_Dir: publish/wpf
+      Blazor_Output_Dir: publish/blazor
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
 
     steps:
     - name: Checkout
@@ -33,9 +42,19 @@ jobs:
       uses: actions/setup-dotnet@v4
       with:
         dotnet-version: 9.x
+        
+    - name: Add .NET tools to PATH
+      run: echo "$HOME/.dotnet/tools" >> $GITHUB_PATH
+
+    - name: Install LibMan CLI
+      run: dotnet tool install -g Microsoft.Web.LibraryManager.Cli
 
     - name: Restore dependencies
       run: dotnet restore
+
+    - name: Restore LibMan libraries
+      working-directory: ${{ env.Blazor_Dir }}
+      run: libman restore
 
     - name: Build solution
       run: dotnet build --configuration ${{ env.Configuration }} --no-restore
@@ -44,7 +63,7 @@ jobs:
       if: matrix.configuration == 'Debug'
       run: dotnet test --configuration ${{ env.Configuration }} --no-build
 
-    - name: Publish app
+    - name: Publish WPF app
       if: matrix.configuration == 'Release'
       run: >
         dotnet publish ${{ env.Wpf_App }}
@@ -52,11 +71,11 @@ jobs:
         -r ${{ env.Runtime }}
         --self-contained true
         -p:PublishSingleFile=true
-        -o ${{ env.Output_Dir }}
+        -o ${{ env.Wpf_Output_Dir }}
 
     - name: Create ZIP archive
       if: matrix.configuration == 'Release'
-      run: Compress-Archive -Path ${{ env.Output_Dir }}\* -DestinationPath ${{ env.Zip_Filename }}
+      run: Compress-Archive -Path ${{ env.Wpf_Output_Dir }}\* -DestinationPath ${{ env.Zip_Filename }}
 
     - name: Upload artifacts
       if: matrix.configuration == 'Release'
@@ -64,6 +83,32 @@ jobs:
       with:
         name: FantasyNameGenerator
         path: ${{ env.Zip_Filename }}
+        
+    - name: Publish Blazor WebAssembly
+      if: matrix.configuration == 'Release'
+      run: >
+        dotnet publish ${{ env.Blazor_App }}
+        -c ${{ env.Configuration }}
+        -o ${{ env.Blazor_Output_Dir }}
+
+    - name: Replace the base href in index.html
+      if: matrix.configuration == 'Release'
+      uses: SteveSandersonMS/ghaction-rewrite-base-href@v1
+      with:
+        html_path: ${{ env.Blazor_Output_Dir }}/wwwroot/index.html
+        base_href: /FantasyNameGenerator/
+
+    - name: Upload Blazor site as Pages artifact
+      if: matrix.configuration == 'Release'
+      uses: actions/upload-pages-artifact@v3
+      with:
+        path: ${{ env.Blazor_Output_Dir }}/wwwroot
+
+    - name: Upload Blazor WebAssembly to GitHub Pages
+      if: matrix.configuration == 'Release'
+      uses: actions/deploy-pages@v4
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
 
   release:
     needs: build

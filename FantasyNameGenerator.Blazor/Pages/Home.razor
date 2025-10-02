@@ -27,8 +27,8 @@
         </div>
 
         <fieldset>
-            <legend>Options</legend>
-
+            <legend>Options<a class="btn btn-link" data-bs-toggle="offcanvas" href="#advancedOptions" role="button" aria-controls="advancedOptions"><i class="bi bi-gear-fill"></i></a></legend>
+            
             <div class="mb-3">
                 <InputRadioGroup @bind-Value="Gender">
                     <div class="form-check">
@@ -40,14 +40,6 @@
                         <label class="form-check-label" for="radioFemale">Female</label>
                     </div>
                 </InputRadioGroup>
-            </div>
-
-            <div class="mb-3 position-relative">
-                <label class="form-label">Sequence Size</label>
-                <div class="position-relative">
-                    <input type="range" class="form-range" min="1" max="10" step="1" @bind="SequenceSize" id="rangeSequence" />
-                    <div class="position-absolute top-0 end-0 translate-middle-y text-muted small">@SequenceSize</div>
-                </div>
             </div>
 
         </fieldset>
@@ -83,6 +75,21 @@
                 <button @onclick="OnDownload" class="btn btn-primary btn-sm"><i class="bi bi-download"></i> Download</button>
             }
         </div>
+    </div>
+</div>
+
+<div class="offcanvas offcanvas-start" tabindex="-1" id="advancedOptions" aria-labelledby="advancedOptionsLabel">
+    <div class="offcanvas-header">
+        <h1 class="offcanvas-title" id="advancedOptionsLabel">Advanced Options</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+    </div>
+    <div class="offcanvas-body">
+        <label class="form-label">Sequence Size</label>
+        <div class="position-relative">
+            <input type="range" class="form-range" min="1" max="10" step="1" @bind="SequenceSize" id="rangeSequence" />
+            <div class="position-absolute top-0 end-0 translate-middle-y text-muted small">@SequenceSize</div>
+        </div>
+        <p class="form-text">The sequence size determines how many characters are considered when generating the next character in the name. A larger sequence size can produce more coherent names, but may also result in less variety.</p>
     </div>
 </div>
 
