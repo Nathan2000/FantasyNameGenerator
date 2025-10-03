@@ -1,6 +1,6 @@
 {
   "description": "Orcs, also called Orsimer or \"Pariah Folk\" in ancient times, are sophisticated, beastlike people of the Wrothgarian Mountains, Dragontail Mountains, Valenwood, and Orsinium.",
-  "template": "{name} {prefix}{surname}",
+  "template": "{name} {g|gro-|gra-}{surname}",
   "components": {
     "name": {
       "type": "Markov",

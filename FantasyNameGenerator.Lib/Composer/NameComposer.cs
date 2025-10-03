@@ -1,11 +1,7 @@
 ﻿using FantasyNameGenerator.Lib.Generator;
 using FantasyNameGenerator.Lib.Metadata;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
+using NameComponent = FantasyNameGenerator.Lib.Metadata.NameComponent;
 
 namespace FantasyNameGenerator.Lib.Composer
 {

@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace FantasyNameGenerator.Lib.Metadata
+﻿namespace FantasyNameGenerator.Lib.Metadata
 {
     public class CultureMetadata(string name, string? description, string template, IReadOnlyDictionary<string, NameComponent> components)
     {
