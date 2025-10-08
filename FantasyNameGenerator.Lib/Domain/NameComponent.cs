@@ -21,9 +21,9 @@ namespace FantasyNameGenerator.Lib.Domain
             FemaleNames = [.. femaleNames];
         }
 
-        public INameGenerator CreateGenerator(Gender gender, int sequenceSize)
+        public INameGenerator CreateGenerator(NameGenerationOptions options)
         {
-            var sourceNames = gender switch
+            var sourceNames = options.Gender switch
             {
                 Gender.Male => MaleNames,
                 Gender.Female => FemaleNames,
@@ -32,7 +32,10 @@ namespace FantasyNameGenerator.Lib.Domain
 
             return Type switch
             {
-                ComponentType.Markov => new MarkovGenerator([.. sourceNames], sequenceSize),
+                ComponentType.Markov => new MarkovGenerator([.. sourceNames], options.SequenceSize)
+                {
+                    LengthModifier = options.LengthModifier
+                },
                 ComponentType.Literal => new LiteralGenerator([.. sourceNames]),
                 _ => throw new NotSupportedException($"Component type {Type} is not supported.")
             };

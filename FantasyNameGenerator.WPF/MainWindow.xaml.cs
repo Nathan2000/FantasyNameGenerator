@@ -1,17 +1,10 @@
-﻿using FantasyNameGenerator.WPF.Model;
+﻿using FantasyNameGenerator.WPF.Services;
 using FantasyNameGenerator.WPF.ViewModels;
 using Microsoft.Win32;
 using System.IO;
-using System.Text;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace FantasyNameGenerator.WPF
 {
@@ -23,6 +16,15 @@ namespace FantasyNameGenerator.WPF
         public MainWindow()
         {
             InitializeComponent();
+            Loaded += OnLoadedAsync;
+        }
+
+        private async void OnLoadedAsync(object sender, RoutedEventArgs e)
+        {
+            if (DataContext is NamesViewModel vm)
+            {
+                await vm.InitializeAsync(ServiceLocator.NameCultureProvider);
+            }
         }
 
         private void CommandBinding_OnClose(object sender, ExecutedRoutedEventArgs e)
@@ -49,7 +51,7 @@ namespace FantasyNameGenerator.WPF
         {
             if (DataContext is NamesViewModel viewModel)
             {
-                e.CanExecute = viewModel.Names.Any();
+                e.CanExecute = viewModel.GeneratedNames.Any();
             }
         }
 
@@ -70,9 +72,9 @@ namespace FantasyNameGenerator.WPF
                     try
                     {
                         using var file = new StreamWriter(dialog.OpenFile());
-                        foreach (var name in viewModel.Names)
+                        foreach (var name in viewModel.GeneratedNames)
                         {
-                            await file.WriteLineAsync(name);
+                            await file.WriteLineAsync(name.FullName);
                         }
                     }
                     catch (IOException ex)

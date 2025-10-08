@@ -1,0 +1,11 @@
+{
+  "description": "Slavs are the largest Indo-European ethno-linguistic group in Europe. From the early 6th century they inhabit most of Central, Eastern and Southeastern Europe.",
+  "template": "{name}",
+  "components": {
+    "name": {
+      "type": "Markov",
+      "male": "male.txt",
+      "female": "female.txt"
+    }
+  }
+}

@@ -1,30 +1,20 @@
-﻿using FantasyNameGenerator.Lib.Composer;
-using FantasyNameGenerator.Lib.Metadata;
+﻿using FantasyNameGenerator.Lib.Domain;
 using FantasyNameGenerator.WPF.Commands;
-using FantasyNameGenerator.WPF.Model;
 using FantasyNameGenerator.WPF.Services;
-using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.IO;
-using System.Linq;
+using System.Diagnostics;
 using System.Runtime.CompilerServices;
-using System.Text;
-using System.Text.Json;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Data;
 using System.Windows.Input;
 
 namespace FantasyNameGenerator.WPF.ViewModels
 {
-    internal class NamesViewModel : INotifyPropertyChanged
+    public class NamesViewModel : INotifyPropertyChanged
     {
-        private NameComposer? _composer;
+        private readonly INameCultureProvider _service;
 
-        public ObservableCollection<NameCategory> Categories { get; set; }
-        public ObservableCollection<string> Names { get; set; }
+        public ObservableCollection<NameCategory> Categories { get; } = [];
+        public ObservableCollection<NameCulture> Cultures { get; } = [];
 
         private NameCategory? _selectedCategory;
         public NameCategory? SelectedCategory
@@ -32,10 +22,19 @@ namespace FantasyNameGenerator.WPF.ViewModels
             get => _selectedCategory;
             set
             {
-                if (_selectedCategory == value) return;
+                if (_selectedCategory == value)
+                    return;
                 _selectedCategory = value;
                 OnPropertyChanged();
-                SelectedCulture = _selectedCategory?.Cultures.FirstOrDefault();
+                Cultures.Clear();
+                if (value != null)
+                {
+                    foreach (var culture in value.Cultures.Values)
+                    {
+                        Cultures.Add(culture);
+                    }
+                }
+                SelectedCulture = Cultures.FirstOrDefault();
             }
         }
 
@@ -45,80 +44,111 @@ namespace FantasyNameGenerator.WPF.ViewModels
             get => _selectedCulture;
             set
             {
-                if (_selectedCulture == value) return;
+                if (_selectedCulture == value)
+                    return;
                 _selectedCulture = value;
                 OnPropertyChanged();
-                ResetComposer();
+                _ = LoadCultureMetadataAsync(value);
             }
         }
 
-        private Gender _gender = Gender.Male;
-        public Gender Gender
+        public ObservableCollection<GeneratedName> GeneratedNames { get; set; }
+
+        private NameCultureMetadata? _metadata;
+        public NameCultureMetadata? Metadata
         {
-            get => _gender;
+            get => _metadata;
             set
             {
-                if (_gender == value) return;
-                _gender = value;
-                ResetComposer();
+                if (_metadata != value)
+                {
+                    _metadata = value;
+                    OnPropertyChanged();
+                }
             }
         }
 
-        private int _sequenceSize = 3;
-        public int SequenceSize
-        {
-            get => _sequenceSize;
-            set
-            {
-                if (_sequenceSize == value) return;
-                _sequenceSize = value;
-                ResetComposer();
-            }
-        }
+        public Gender Gender { get; set; }
+        public int SequenceSize { get; set; } = 3;
+        public double LengthModifier { get; set; } = 1.0;
 
         public ICommand GenerateCommand { get; set; }
         public ICommand ClearNamesCommand { get; set; }
 
-        public NamesViewModel() : this(ServiceLocator.DataService) { }
-        public NamesViewModel(IDataService dataService)
+        public NamesViewModel() : this(ServiceLocator.NameCultureProvider) { }
+        public NamesViewModel(INameCultureProvider service)
         {
-            Categories = dataService.GetCategories();
-            SelectedCategory = Categories.FirstOrDefault();
-            Names = [];
+            _service = service;
+            GeneratedNames = [];
 
             GenerateCommand = new SimpleCommand(
-                p => GenerateNames(),
+                p => GenerateName(),
                 p => SelectedCategory != null && SelectedCulture != null);
             ClearNamesCommand = new SimpleCommand(
-                p => Names.Clear(),
-                p => Names.Any());
+                p => GeneratedNames?.Clear(),
+                p => GeneratedNames != null && GeneratedNames.Any());
+
+            if (ServiceLocator.IsInDesignMode)
+            {
+                DesignTimeData.Set(this);
+            }
+        }
+
+        public async Task InitializeAsync(INameCultureProvider service)
+        {
+            var categoryDict = await service.GetAllCategoriesAsync();
+            Categories.Clear();
+            foreach (var category in categoryDict.Values)
+            {
+                Categories.Add(category);
+            }
+
+            SelectedCategory = Categories.FirstOrDefault();
+        }
+
+        private void GenerateName()
+        {
+            if (_metadata != null)
+            {
+                var options = new NameGenerationOptions
+                {
+                    Gender = Gender,
+                    SequenceSize = SequenceSize,
+                    LengthModifier = LengthModifier
+                };
+                var name = _metadata.GenerateName(options);
+                GeneratedNames.Add(name);
+            }
+        }
+
+        private CancellationTokenSource? _cts;
+
+        private async Task LoadCultureMetadataAsync(NameCulture? culture)
+        {
+            _cts?.Cancel();
+            _cts = new CancellationTokenSource();
+
+            if (culture == null)
+                return;
+
+            try
+            {
+                Metadata = await _service.GetCultureMetadataAsync(culture.Category, culture.Name, _cts.Token);
+            }
+            catch (OperationCanceledException)
+            {
+                Debug.WriteLine("Metadata loading canceled.");
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"Error loading metadata: {ex.Message}");
+            }
         }
 
         public event PropertyChangedEventHandler? PropertyChanged;
         protected void OnPropertyChanged([CallerMemberName] string? propertyName = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
-
-        private void ResetComposer()
-        {
-            if (SelectedCulture == null || SelectedCulture.Metadata == null || SelectedCulture.DirectoryPath == null)
-            {
-                _composer = null;
-                return;
-            }
-
-            var metadata = JsonMetadataMapper.Map(SelectedCulture.Name, SelectedCulture.DirectoryPath, SelectedCulture.Metadata);
-            _composer = new NameComposer(Gender, SequenceSize, metadata);
-        }
-
-        private void GenerateNames()
-        {
-            if (_composer != null)
-            {
-                var name = _composer.Generate();
-                Names.Add(name);
-            }
         }
     }
 }

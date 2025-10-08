@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:FantasyNameGenerator.WPF"
         xmlns:vm="clr-namespace:FantasyNameGenerator.WPF.ViewModels"
         xmlns:Converters="clr-namespace:FantasyNameGenerator.WPF.Converters"
-        xmlns:Metadata="clr-namespace:FantasyNameGenerator.Lib.Metadata;assembly=FantasyNameGenerator.Lib"
+        xmlns:Domain="clr-namespace:FantasyNameGenerator.Lib.Domain;assembly=FantasyNameGenerator.Lib"
         x:Class="FantasyNameGenerator.WPF.MainWindow"
         mc:Ignorable="d"
         Title="Fantasy Name Generator" Height="450" Width="800"
@@ -21,7 +21,7 @@
     <Window.CommandBindings>
         <CommandBinding Command="Close" Executed="CommandBinding_OnClose"/>
     </Window.CommandBindings>
-    <DockPanel LastChildFill="True">
+    <DockPanel>
         <Menu Height="20" IsMainMenu="True" DockPanel.Dock="Top">
             <MenuItem Header="_File">
                 <MenuItem Header="_Generate" Command="{Binding GenerateCommand}"/>
@@ -29,6 +29,33 @@
                 <MenuItem Command="Close"/>
             </MenuItem>
         </Menu>
+        <Expander Header="Advanced" IsExpanded="False" ExpandDirection="Left" DockPanel.Dock="Right">
+            <Expander.HeaderTemplate>
+                <DataTemplate>
+                    <TextBlock Text="{Binding}">
+                        <TextBlock.LayoutTransform>
+                            <TransformGroup>
+                                <RotateTransform Angle="90"/>
+                            </TransformGroup>
+                        </TextBlock.LayoutTransform>
+                    </TextBlock>
+                </DataTemplate>
+            </Expander.HeaderTemplate>
+            <StackPanel Width="250">
+                <GroupBox Header="Name generation">
+                    <StackPanel>
+                        <TextBlock Text="Sequence size"/>
+                        <Slider Minimum="1" Maximum="10" IsSnapToTickEnabled="True" TickPlacement="TopLeft"
+                                AutoToolTipPlacement="TopLeft" AutoToolTipPrecision="0"
+                                Value="{Binding SequenceSize}"/>
+                        <TextBlock Text="Length modifier"/>
+                        <Slider Minimum="0.5" Maximum="2" IsSnapToTickEnabled="True" TickPlacement="TopLeft"
+                                AutoToolTipPlacement="TopLeft" AutoToolTipPrecision="2" TickFrequency="0.25"
+                                Value="{Binding LengthModifier}"/>
+                    </StackPanel>
+                </GroupBox>
+            </StackPanel>
+        </Expander>
         <Grid>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="150"/>
@@ -40,34 +67,30 @@
                       ItemsSource="{Binding Categories}" SelectedItem="{Binding SelectedCategory, Mode=TwoWay}"
                       DisplayMemberPath="Name"/>
                 <ComboBox Margin="10,5,10,0"
-                      ItemsSource="{Binding SelectedCategory.Cultures}" SelectedValue="{Binding SelectedCulture, Mode=TwoWay}"
+                      ItemsSource="{Binding Cultures}" SelectedValue="{Binding SelectedCulture, Mode=TwoWay}"
                       DisplayMemberPath="Name"/>
                 <GroupBox Header="Options" Margin="10,5,10,0">
                     <StackPanel>
                         <RadioButton Content="Male" HorizontalAlignment="Left" Height="16"
-                                     IsChecked="{Binding Gender, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:Static Metadata:Gender.Male}}"/>
+                                     IsChecked="{Binding Gender, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:Static Domain:Gender.Male}}"/>
                         <RadioButton Content="Female" HorizontalAlignment="Left" Height="16"
-                                     IsChecked="{Binding Gender, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:Static Metadata:Gender.Female}}"/>
-                        <TextBlock Text="Sequence size"/>
-                        <Slider Minimum="1" Maximum="10" IsSnapToTickEnabled="True" TickPlacement="TopLeft"
-                                AutoToolTipPlacement="TopLeft" AutoToolTipPrecision="0"
-                                Value="{Binding SequenceSize}"/>
+                                     IsChecked="{Binding Gender, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:Static Domain:Gender.Female}}"/>
                     </StackPanel>
                 </GroupBox>
                 <TextBlock Margin="10,10,10,0"
-                           TextWrapping="Wrap" Text="{Binding SelectedCulture.Description}"/>
+                           TextWrapping="Wrap" Text="{Binding Metadata.Description}"/>
             </StackPanel>
             <Button Content="Generate" Margin="10,0,10,10" Height="20" VerticalAlignment="Bottom"
                     Command="{Binding GenerateCommand}"/>
             <GridSplitter Grid.Column="1" HorizontalAlignment="Stretch"/>
-            <ListBox Grid.Column="2" ItemsSource="{Binding Names}">
+            <ListBox Grid.Column="2" ItemsSource="{Binding GeneratedNames}">
                 <ListBox.CommandBindings>
                     <CommandBinding Command="Save" Executed="CommandBinding_OnSave" CanExecute="CommandBinding_OnCanSave"/>
                     <CommandBinding Command="Copy" Executed="CommandBinding_OnCopy" CanExecute="CommandBinding_OnCanCopy" />
                 </ListBox.CommandBindings>
                 <ListBox.ItemTemplate>
                     <DataTemplate>
-                        <TextBlock Text="{Binding}"/>
+                        <TextBlock Text="{Binding FullName}"/>
                     </DataTemplate>
                 </ListBox.ItemTemplate>
                 <ListBox.ContextMenu>

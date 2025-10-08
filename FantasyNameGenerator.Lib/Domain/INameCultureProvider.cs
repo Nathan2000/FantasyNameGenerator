@@ -2,7 +2,7 @@
 {
     public interface INameCultureProvider
     {
-        Task<IDictionary<string, NameCategory>> GetAllCategoriesAsync();
-        Task<NameCultureMetadata> GetCultureMetadataAsync(string categoryName, string cultureName);
+        Task<IReadOnlyDictionary<string, NameCategory>> GetAllCategoriesAsync(CancellationToken ct = default);
+        Task<NameCultureMetadata> GetCultureMetadataAsync(string categoryName, string cultureName, CancellationToken ct = default);
     }
 }

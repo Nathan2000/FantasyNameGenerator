@@ -4,17 +4,17 @@ using System.Text.Json;
 
 namespace FantasyNameGenerator.Lib.Infrastructure
 {
-    public class JsonNameCultureProvider(string dataPath, IDataLoader dataLoader) : INameCultureProvider
+    public class JsonNameCultureProvider(string dataPath, IDataLoader dataLoader, IDirectoryLoader directoryLoader) : INameCultureProvider
     {
         private const string MetadataFileName = "metadata.json";
         private readonly string dataPath = dataPath ?? throw new ArgumentNullException(nameof(dataPath));
 
         private readonly NameComponentMapper _mapper = new(dataLoader);
 
-        public async Task<IDictionary<string, NameCategory>> GetAllCategoriesAsync()
+        public async Task<IReadOnlyDictionary<string, NameCategory>> GetAllCategoriesAsync(CancellationToken ct = default)
         {
             var categories = new Dictionary<string, NameCategory>();
-            foreach (var categoryDir in Directory.GetDirectories(dataPath))
+            foreach (var categoryDir in directoryLoader.GetDirectories(dataPath))
             {
                 var categoryName = Path.GetFileName(categoryDir);
                 categories.Add(categoryName, new NameCategory
@@ -26,17 +26,19 @@ namespace FantasyNameGenerator.Lib.Infrastructure
             return categories;
         }
 
-        public async Task<NameCultureMetadata> GetCultureMetadataAsync(string categoryName, string cultureName)
+        public async Task<NameCultureMetadata> GetCultureMetadataAsync(string categoryName, string cultureName, CancellationToken ct = default)
         {
             var metadataDir = Path.Combine(dataPath, categoryName, cultureName);
-            if (string.IsNullOrEmpty(metadataDir) || !Directory.Exists(metadataDir))
+            if (string.IsNullOrEmpty(metadataDir) || !directoryLoader.DirectoryExists(metadataDir))
                 throw new DirectoryNotFoundException($"Culture directory not found: {metadataDir}");
 
             var metadataPath = Path.Combine(metadataDir, MetadataFileName);
-            if (string.IsNullOrEmpty(metadataPath) || !File.Exists(metadataPath))
-                throw new FileNotFoundException($"Culture metadata not found: {metadataPath}");
+            //if (string.IsNullOrEmpty(metadataPath) || !File.Exists(metadataPath))
+            //    throw new FileNotFoundException($"Culture metadata not found: {metadataPath}");
 
-            var metadataJson = await File.ReadAllTextAsync(metadataPath);
+            var metadataJson = await dataLoader.ReadFileAsync(metadataPath, ct);
+            // TODO: Check if the file exists.
+
             var metadata = JsonSerializer.Deserialize<CultureMetadataDto>(metadataJson);
             if (metadata is null)
                 throw new InvalidOperationException("Failed to deserialize culture metadata.");
@@ -46,20 +48,20 @@ namespace FantasyNameGenerator.Lib.Infrastructure
                 Category = categoryName,
                 Description = metadata.Description,
                 Template = metadata.Template,
-                Components = await GetComponents(metadata.Components, metadataDir)
+                Components = await GetComponents(metadata.Components, metadataDir, ct)
             };
         }
 
-        private static async Task<Dictionary<string, NameCulture>> GetCultures(string categoryDir)
+        private async Task<Dictionary<string, NameCulture>> GetCultures(string categoryDir)
         {
             var cultures = new Dictionary<string, NameCulture>();
-            foreach (var cultureDir in Directory.GetDirectories(categoryDir))
+            foreach (var cultureDir in directoryLoader.GetDirectories(categoryDir))
             {
                 var metadataPath = Path.Combine(cultureDir, MetadataFileName);
-                if (!File.Exists(metadataPath))
-                    continue; // Skip if metadata file does not exist
-                var metadataJson = await File.ReadAllTextAsync(metadataPath);
-                var metadata = JsonSerializer.Deserialize<CultureMetadataDto>(metadataJson);
+                //if (!File.Exists(metadataPath))
+                //    continue;
+                // TODO: Skip if metadata file does not exist
+                var metadata = await dataLoader.ReadJsonFileAsync<CultureMetadataDto>(metadataPath);
                 if (metadata is null)
                     continue;
 
@@ -73,12 +75,12 @@ namespace FantasyNameGenerator.Lib.Infrastructure
             return cultures;
         }
 
-        private async Task<Dictionary<string, NameComponent>> GetComponents(Dictionary<string, NameComponentDto> dtos, string cultureDirectory)
+        private async Task<Dictionary<string, NameComponent>> GetComponents(Dictionary<string, NameComponentDto> dtos, string cultureDirectory, CancellationToken ct)
         {
             var components = new Dictionary<string, NameComponent>();
             foreach (var (componentName, dto) in dtos)
             {
-                var component = await _mapper.MapAsync(componentName, dto, cultureDirectory);
+                var component = await _mapper.MapAsync(componentName, dto, cultureDirectory, ct);
                 components[componentName] = component;
             }
             return components;

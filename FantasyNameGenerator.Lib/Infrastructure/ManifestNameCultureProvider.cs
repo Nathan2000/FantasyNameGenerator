@@ -10,10 +10,10 @@ namespace FantasyNameGenerator.Lib.Infrastructure
 
         private readonly NameComponentMapper _mapper = new(dataLoader);
 
-        public async Task<IDictionary<string, NameCategory>> GetAllCategoriesAsync()
+        public async Task<IReadOnlyDictionary<string, NameCategory>> GetAllCategoriesAsync(CancellationToken ct = default)
         {
             string manifestPath = $"Data/{ManifestFileName}";
-            var categoryDtos = await dataLoader.ReadJsonFileAsync<DataManifestDto>(manifestPath)
+            var categoryDtos = await dataLoader.ReadJsonFileAsync<DataManifestDto>(manifestPath, ct)
                 ?? throw new InvalidOperationException("Failed to load data manifest.");
             var categories = new Dictionary<string, NameCategory>();
             foreach ((string categoryName, var cultures) in categoryDtos)
@@ -41,10 +41,10 @@ namespace FantasyNameGenerator.Lib.Infrastructure
             return cultures;
         }
 
-        public async Task<NameCultureMetadata> GetCultureMetadataAsync(string categoryName, string cultureName)
+        public async Task<NameCultureMetadata> GetCultureMetadataAsync(string categoryName, string cultureName, CancellationToken ct = default)
         {
             string metadataPath = $"Data/{categoryName}/{cultureName}/{MetadataFileName}";
-            var metadata = await dataLoader.ReadJsonFileAsync<CultureMetadataDto>(metadataPath)
+            var metadata = await dataLoader.ReadJsonFileAsync<CultureMetadataDto>(metadataPath, ct)
                 ?? throw new InvalidOperationException("Failed to deserialize culture metadata.");
 
             return new NameCultureMetadata
@@ -53,16 +53,16 @@ namespace FantasyNameGenerator.Lib.Infrastructure
                 Category = categoryName,
                 Description = metadata.Description,
                 Template = metadata.Template,
-                Components = await GetComponents(metadata.Components, $"Data/{categoryName}/{cultureName}")
+                Components = await GetComponents(metadata.Components, $"Data/{categoryName}/{cultureName}", ct)
             };
         }
 
-        private async Task<Dictionary<string, NameComponent>> GetComponents(Dictionary<string, NameComponentDto> dtos, string cultureDirectory)
+        private async Task<Dictionary<string, NameComponent>> GetComponents(Dictionary<string, NameComponentDto> dtos, string cultureDirectory, CancellationToken ct)
         {
             var components = new Dictionary<string, NameComponent>();
             foreach (var (componentName, dto) in dtos)
             {
-                var component = await _mapper.MapAsync(componentName, dto, cultureDirectory);
+                var component = await _mapper.MapAsync(componentName, dto, cultureDirectory, ct);
                 components[componentName] = component;
             }
             return components;

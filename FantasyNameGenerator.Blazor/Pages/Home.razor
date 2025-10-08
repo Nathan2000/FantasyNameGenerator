@@ -95,8 +95,8 @@
 
 @code
 {
-    private IDictionary<string, NameCategory> Categories = new Dictionary<string, NameCategory>();
-    private IDictionary<string, NameCulture> Cultures = new Dictionary<string, NameCulture>();
+    private IReadOnlyDictionary<string, NameCategory> Categories = new Dictionary<string, NameCategory>();
+    private IReadOnlyDictionary<string, NameCulture> Cultures = new Dictionary<string, NameCulture>();
     private List<GeneratedName> GeneratedNames = [];
 
     public Gender Gender { get; set; }

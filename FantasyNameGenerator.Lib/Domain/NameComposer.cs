@@ -15,7 +15,7 @@ namespace FantasyNameGenerator.Lib.Domain
             _template = template;
             _generators = components.ToDictionary(
                 kvp => kvp.Key,
-                kvp => kvp.Value.CreateGenerator(options.Gender, options.SequenceSize)
+                kvp => kvp.Value.CreateGenerator(options)
             );
         }
 
