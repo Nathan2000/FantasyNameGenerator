@@ -1,4 +1,4 @@
-﻿using FantasyNameGenerator.Lib.Domain;
+﻿using FantasyNameGenerator.Lib.Domain.Model;
 using FantasyNameGenerator.Lib.Infrastructure.DTOs;
 
 namespace FantasyNameGenerator.Lib.Infrastructure

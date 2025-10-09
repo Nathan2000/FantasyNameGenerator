@@ -1,4 +1,4 @@
-﻿using FantasyNameGenerator.Lib.Domain;
+﻿using FantasyNameGenerator.Lib.Domain.Services;
 using FantasyNameGenerator.Lib.Infrastructure;
 using System.ComponentModel;
 using System.Windows;
@@ -10,16 +10,10 @@ namespace FantasyNameGenerator.WPF.Services
         public static bool IsInDesignMode => DesignerProperties.GetIsInDesignMode(new DependencyObject());
 
         // TODO: Implement separate design-time services
-        public static IDataLoader DataLoader => IsInDesignMode
-            ? new JsonDataLoader()
-            : new JsonDataLoader();
+        public static IDataLoader DataLoader => new JsonDataLoader();
 
-        public static IDirectoryLoader DirectoryLoader => IsInDesignMode
-            ? new FileSystemDirectoryLoader()
-            : new FileSystemDirectoryLoader();
+        public static IDirectoryLoader DirectoryLoader => new FileSystemDirectoryLoader();
 
-        public static INameCultureProvider NameCultureProvider => IsInDesignMode
-            ? new DesignTimeNameCultureProvider()
-            : new JsonNameCultureProvider("Data", DataLoader, DirectoryLoader);
+        public static INameCultureProvider NameCultureProvider => new JsonNameCultureProvider("Data", DataLoader, DirectoryLoader);
     }
 }

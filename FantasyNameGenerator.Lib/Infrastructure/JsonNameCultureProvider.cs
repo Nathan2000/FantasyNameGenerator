@@ -1,4 +1,5 @@
-﻿using FantasyNameGenerator.Lib.Domain;
+﻿using FantasyNameGenerator.Lib.Domain.Model;
+using FantasyNameGenerator.Lib.Domain.Services;
 using FantasyNameGenerator.Lib.Infrastructure.DTOs;
 using System.Text.Json;
 

@@ -1,4 +1,6 @@
-﻿using FantasyNameGenerator.Lib.Domain;
+﻿using FantasyNameGenerator.Lib.Domain.Common;
+using FantasyNameGenerator.Lib.Domain.Model;
+using FantasyNameGenerator.Lib.Domain.Services;
 using FantasyNameGenerator.WPF.Commands;
 using FantasyNameGenerator.WPF.Services;
 using System.Collections.ObjectModel;

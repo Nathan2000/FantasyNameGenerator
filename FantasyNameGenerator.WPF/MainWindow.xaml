@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:FantasyNameGenerator.WPF"
         xmlns:vm="clr-namespace:FantasyNameGenerator.WPF.ViewModels"
         xmlns:Converters="clr-namespace:FantasyNameGenerator.WPF.Converters"
-        xmlns:Domain="clr-namespace:FantasyNameGenerator.Lib.Domain;assembly=FantasyNameGenerator.Lib"
+        xmlns:common="clr-namespace:FantasyNameGenerator.Lib.Domain.Common;assembly=FantasyNameGenerator.Lib"
         x:Class="FantasyNameGenerator.WPF.MainWindow"
         mc:Ignorable="d"
         Title="Fantasy Name Generator" Height="450" Width="800"
@@ -72,9 +72,9 @@
                 <GroupBox Header="Options" Margin="10,5,10,0">
                     <StackPanel>
                         <RadioButton Content="Male" HorizontalAlignment="Left" Height="16"
-                                     IsChecked="{Binding Gender, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:Static Domain:Gender.Male}}"/>
+                                     IsChecked="{Binding Gender, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:Static common:Gender.Male}}"/>
                         <RadioButton Content="Female" HorizontalAlignment="Left" Height="16"
-                                     IsChecked="{Binding Gender, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:Static Domain:Gender.Female}}"/>
+                                     IsChecked="{Binding Gender, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:Static common:Gender.Female}}"/>
                     </StackPanel>
                 </GroupBox>
                 <TextBlock Margin="10,10,10,0"
