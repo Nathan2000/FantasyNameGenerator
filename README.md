@@ -1,7 +1,7 @@
 # Fantasy Name Generator
 This is an application that can generate names for fantasy cultures, based on a predefined list of names. It was primarily meant for writing The Elder Scrolls fan-fiction, but can be easily extended for custom cultures.
 
-The project includes a WPF application and a Blazor Single-Page app.
+The project includes a WPF application and a Blazor Single-Page app. The Blazor app is a Progressive Web Application, so you can install it on your own computer.
 
 * Try out a live demo: [Fantasy Name Generator on GitHub Pages](https://nathan2000.github.io/FantasyNameGenerator/)
 * Get the latest release: [![Latest Release](https://img.shields.io/github/v/release/Nathan2000/FantasyNameGenerator?label=Download)](https://github.com/Nathan2000/FantasyNameGenerator/releases/latest)
