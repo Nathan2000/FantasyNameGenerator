@@ -1,4 +1,7 @@
-﻿namespace FantasyNameGenerator.Lib.Domain
+﻿using FantasyNameGenerator.Lib.Domain.Common;
+using FantasyNameGenerator.Lib.Domain.Generator;
+
+namespace FantasyNameGenerator.Lib.Domain.Model
 {
     public class NameCultureMetadata
     {

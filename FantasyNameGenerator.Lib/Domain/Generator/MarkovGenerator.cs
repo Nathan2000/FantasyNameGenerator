@@ -1,9 +1,7 @@
-﻿using FantasyNameGenerator.Lib.Distribution;
-using System.Reflection;
-using System.Runtime.CompilerServices;
+﻿using FantasyNameGenerator.Lib.Domain.Distribution;
 using System.Text;
 
-namespace FantasyNameGenerator.Lib.Generator
+namespace FantasyNameGenerator.Lib.Domain.Generator
 {
     public class MarkovGenerator : INameGenerator
     {

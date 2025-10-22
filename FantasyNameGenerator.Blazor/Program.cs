@@ -1,4 +1,4 @@
-using FantasyNameGenerator.Lib.Domain;
+using FantasyNameGenerator.Lib.Domain.Services;
 using FantasyNameGenerator.Lib.Infrastructure;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;

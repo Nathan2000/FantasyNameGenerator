@@ -1,4 +1,5 @@
-﻿using FantasyNameGenerator.Lib.Domain;
+﻿using FantasyNameGenerator.Lib.Domain.Common;
+using FantasyNameGenerator.Lib.Domain.Model;
 using FantasyNameGenerator.WPF.ViewModels;
 
 namespace FantasyNameGenerator.WPF.Services

@@ -1,4 +1,4 @@
-﻿using FantasyNameGenerator.Lib.Generator;
+﻿using FantasyNameGenerator.Lib.Domain.Generator;
 
 namespace FantasyNameGenerator.Test
 {

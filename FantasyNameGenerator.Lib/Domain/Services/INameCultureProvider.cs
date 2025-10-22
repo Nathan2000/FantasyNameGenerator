@@ -1,4 +1,6 @@
-﻿namespace FantasyNameGenerator.Lib.Domain
+﻿using FantasyNameGenerator.Lib.Domain.Model;
+
+namespace FantasyNameGenerator.Lib.Domain.Services
 {
     public interface INameCultureProvider
     {

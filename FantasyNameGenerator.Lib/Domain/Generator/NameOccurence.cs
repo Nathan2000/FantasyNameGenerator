@@ -1,4 +1,4 @@
-﻿namespace FantasyNameGenerator.Lib.Generator
+﻿namespace FantasyNameGenerator.Lib.Domain.Generator
 {
     public class NameOccurrence
     {

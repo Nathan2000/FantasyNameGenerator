@@ -1,4 +1,4 @@
-﻿using FantasyNameGenerator.Lib.Domain;
+﻿using FantasyNameGenerator.Lib.Domain.Common;
 using System.Text.Json.Serialization;
 
 namespace FantasyNameGenerator.Lib.Infrastructure.DTOs

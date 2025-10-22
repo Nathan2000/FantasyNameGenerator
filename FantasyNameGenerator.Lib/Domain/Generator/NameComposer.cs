@@ -1,7 +1,8 @@
-﻿using FantasyNameGenerator.Lib.Generator;
+﻿using FantasyNameGenerator.Lib.Domain.Common;
+using FantasyNameGenerator.Lib.Domain.Model;
 using System.Text.RegularExpressions;
 
-namespace FantasyNameGenerator.Lib.Domain
+namespace FantasyNameGenerator.Lib.Domain.Generator
 {
     public class NameComposer
     {

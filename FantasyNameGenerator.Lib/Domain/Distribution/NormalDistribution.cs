@@ -1,4 +1,4 @@
-﻿namespace FantasyNameGenerator.Lib.Distribution
+﻿namespace FantasyNameGenerator.Lib.Domain.Distribution
 {
     public class NormalDistribution : IDistribution
     {

@@ -1,4 +1,4 @@
-﻿namespace FantasyNameGenerator.Lib.Domain
+﻿namespace FantasyNameGenerator.Lib.Domain.Model
 {
     public class NameCategory
     {

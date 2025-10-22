@@ -1,6 +1,7 @@
-﻿using FantasyNameGenerator.Lib.Generator;
+﻿using FantasyNameGenerator.Lib.Domain.Common;
+using FantasyNameGenerator.Lib.Domain.Generator;
 
-namespace FantasyNameGenerator.Lib.Domain
+namespace FantasyNameGenerator.Lib.Domain.Model
 {
     public class NameComponent
     {
