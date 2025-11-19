@@ -1,12 +1,11 @@
-﻿using FantasyNameGenerator.WPF.Services;
-using FantasyNameGenerator.WPF.ViewModels;
+﻿using FantasyNameGenerator.WPF.ViewModels.Main;
 using Microsoft.Win32;
 using System.IO;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 
-namespace FantasyNameGenerator.WPF
+namespace FantasyNameGenerator.WPF.Windows
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml
@@ -16,15 +15,6 @@ namespace FantasyNameGenerator.WPF
         public MainWindow()
         {
             InitializeComponent();
-            Loaded += OnLoadedAsync;
-        }
-
-        private async void OnLoadedAsync(object sender, RoutedEventArgs e)
-        {
-            if (DataContext is NamesViewModel vm)
-            {
-                await vm.InitializeAsync(ServiceLocator.NameCultureProvider);
-            }
         }
 
         private void CommandBinding_OnClose(object sender, ExecutedRoutedEventArgs e)
@@ -49,7 +39,7 @@ namespace FantasyNameGenerator.WPF
 
         private void CommandBinding_OnCanSave(object sender, CanExecuteRoutedEventArgs e)
         {
-            if (DataContext is NamesViewModel viewModel)
+            if (DataContext is IMainViewModel viewModel)
             {
                 e.CanExecute = viewModel.GeneratedNames.Any();
             }
@@ -57,7 +47,7 @@ namespace FantasyNameGenerator.WPF
 
         private async void CommandBinding_OnSave(object sender, ExecutedRoutedEventArgs e)
         {
-            if (DataContext is NamesViewModel viewModel)
+            if (DataContext is IMainViewModel viewModel)
             {
                 var dialog = new SaveFileDialog
                 {
@@ -84,5 +74,14 @@ namespace FantasyNameGenerator.WPF
                 }
             }
         }
+
+        //private void OnEdit_Click(object sender, RoutedEventArgs e)
+        //{
+        //    var window = new EditCultureWindow
+        //    {
+        //        Owner = this
+        //    };
+        //    window.Show();
+        //}
     }
 }

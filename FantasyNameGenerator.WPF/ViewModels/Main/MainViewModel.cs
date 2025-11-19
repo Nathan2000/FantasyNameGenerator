@@ -1,19 +1,17 @@
-﻿using FantasyNameGenerator.Lib.Domain.Common;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
+using FantasyNameGenerator.Lib.Domain.Common;
 using FantasyNameGenerator.Lib.Domain.Model;
 using FantasyNameGenerator.Lib.Domain.Services;
-using FantasyNameGenerator.WPF.Commands;
-using FantasyNameGenerator.WPF.Services;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
 using System.Diagnostics;
-using System.Runtime.CompilerServices;
-using System.Windows.Input;
+using System.Windows;
 
-namespace FantasyNameGenerator.WPF.ViewModels
+namespace FantasyNameGenerator.WPF.ViewModels.Main
 {
-    public class NamesViewModel : INotifyPropertyChanged
+    public partial class MainViewModel : ObservableObject, IMainViewModel, IDisposable
     {
-        private readonly INameCultureProvider _service;
+        private readonly INameCultureProvider _cultureProvider;
 
         public ObservableCollection<NameCategory> Categories { get; } = [];
         public ObservableCollection<NameCulture> Cultures { get; } = [];
@@ -24,10 +22,8 @@ namespace FantasyNameGenerator.WPF.ViewModels
             get => _selectedCategory;
             set
             {
-                if (_selectedCategory == value)
+                if (!SetProperty(ref _selectedCategory, value))
                     return;
-                _selectedCategory = value;
-                OnPropertyChanged();
                 Cultures.Clear();
                 if (value != null)
                 {
@@ -46,10 +42,8 @@ namespace FantasyNameGenerator.WPF.ViewModels
             get => _selectedCulture;
             set
             {
-                if (_selectedCulture == value)
+                if (!SetProperty(ref _selectedCulture, value))
                     return;
-                _selectedCulture = value;
-                OnPropertyChanged();
                 _ = LoadCultureMetadataAsync(value);
             }
         }
@@ -62,11 +56,8 @@ namespace FantasyNameGenerator.WPF.ViewModels
             get => _metadata;
             set
             {
-                if (_metadata != value)
-                {
-                    _metadata = value;
-                    OnPropertyChanged();
-                }
+                SetProperty(ref _metadata, value);
+                GenerateNameCommand.NotifyCanExecuteChanged();
             }
         }
 
@@ -74,68 +65,100 @@ namespace FantasyNameGenerator.WPF.ViewModels
         public int SequenceSize { get; set; } = 3;
         public double LengthModifier { get; set; } = 1.0;
 
-        public ICommand GenerateCommand { get; set; }
-        public ICommand ClearNamesCommand { get; set; }
+        private CancellationTokenSource? _cts;
 
-        public NamesViewModel() : this(ServiceLocator.NameCultureProvider) { }
-        public NamesViewModel(INameCultureProvider service)
+        [ObservableProperty]
+        [NotifyCanExecuteChangedFor(nameof(GenerateNameCommand))]
+        private bool _isLoading;
+
+        public MainViewModel(INameCultureProvider cultureProvider)
         {
-            _service = service;
+            _cultureProvider = cultureProvider;
             GeneratedNames = [];
 
-            GenerateCommand = new SimpleCommand(
-                p => GenerateName(),
-                p => SelectedCategory != null && SelectedCulture != null);
-            ClearNamesCommand = new SimpleCommand(
-                p => GeneratedNames?.Clear(),
-                p => GeneratedNames != null && GeneratedNames.Any());
-
-            if (ServiceLocator.IsInDesignMode)
-            {
-                DesignTimeData.Set(this);
-            }
+            _ = InitializeAsync();
         }
 
-        public async Task InitializeAsync(INameCultureProvider service)
+        [RelayCommand]
+        private async Task InitializeAsync()
         {
-            var categoryDict = await service.GetAllCategoriesAsync();
-            Categories.Clear();
-            foreach (var category in categoryDict.Values)
+            IsLoading = true;
+            try
             {
-                Categories.Add(category);
-            }
-
-            SelectedCategory = Categories.FirstOrDefault();
-        }
-
-        private void GenerateName()
-        {
-            if (_metadata != null)
-            {
-                var options = new NameGenerationOptions
+                var categoryDict = await _cultureProvider.GetAllCategoriesAsync();
+                Categories.Clear();
+                foreach (var category in categoryDict.Values)
                 {
-                    Gender = Gender,
-                    SequenceSize = SequenceSize,
-                    LengthModifier = LengthModifier
-                };
-                var name = _metadata.GenerateName(options);
-                GeneratedNames.Add(name);
+                    Categories.Add(category);
+                }
+
+                SelectedCategory = Categories.FirstOrDefault();
+
+            }
+            finally
+            {
+                IsLoading = false;
             }
         }
 
-        private CancellationTokenSource? _cts;
+        [RelayCommand(CanExecute = nameof(CanGenerateName))]
+        private async Task GenerateNameAsync()
+        {
+            var metadata = Metadata;
+            if (metadata == null)
+                return;
+
+            var options = new NameGenerationOptions
+            {
+                Gender = Gender,
+                SequenceSize = SequenceSize,
+                LengthModifier = LengthModifier
+            };
+
+            var name = await Task.Run(() => metadata.GenerateName(options)).ConfigureAwait(false);
+
+            if (Application.Current?.Dispatcher != null)
+                await Application.Current.Dispatcher.InvokeAsync(() => GeneratedNames.Add(name));
+            else
+                GeneratedNames.Add(name);
+
+        }
+
+        private bool CanGenerateName()
+        {
+            return Metadata != null;
+        }
+
+        [RelayCommand(CanExecute = nameof(CanClearNames))]
+        private void ClearNames()
+        {
+            GeneratedNames.Clear();
+        }
+
+        private bool CanClearNames()
+        {
+            return GeneratedNames != null && GeneratedNames.Any();
+        }
 
         private async Task LoadCultureMetadataAsync(NameCulture? culture)
         {
+            // If previous request hasn't finished, cancel it.
             _cts?.Cancel();
+            _cts?.Dispose();
             _cts = new CancellationTokenSource();
+            var token = _cts.Token;
 
             if (culture == null)
                 return;
 
+            IsLoading = true;
             try
             {
-                Metadata = await _service.GetCultureMetadataAsync(culture.Category, culture.Name, _cts.Token);
+                var fetched = await _cultureProvider.GetCultureMetadataAsync(culture.Category, culture.Name, token);
+                if (token.IsCancellationRequested)
+                    return;
+
+                Metadata = fetched;
             }
             catch (OperationCanceledException)
             {
@@ -145,12 +168,17 @@ namespace FantasyNameGenerator.WPF.ViewModels
             {
                 Debug.WriteLine($"Error loading metadata: {ex.Message}");
             }
+            finally
+            {
+                IsLoading = false;
+            }
         }
 
-        public event PropertyChangedEventHandler? PropertyChanged;
-        protected void OnPropertyChanged([CallerMemberName] string? propertyName = null)
+        public void Dispose()
         {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+            _cts?.Cancel();
+            _cts?.Dispose();
+            GC.SuppressFinalize(this);
         }
     }
 }
