@@ -3,33 +3,34 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:FantasyNameGenerator.WPF"
-        xmlns:vm="clr-namespace:FantasyNameGenerator.WPF.ViewModels"
+        xmlns:local="clr-namespace:FantasyNameGenerator.WPF.Windows"
+        xmlns:vm="clr-namespace:FantasyNameGenerator.WPF.ViewModels.Main"
         xmlns:Converters="clr-namespace:FantasyNameGenerator.WPF.Converters"
         xmlns:common="clr-namespace:FantasyNameGenerator.Lib.Domain.Common;assembly=FantasyNameGenerator.Lib"
-        x:Class="FantasyNameGenerator.WPF.MainWindow"
+        xmlns:res="clr-namespace:FantasyNameGenerator.WPF.Resources"
+        x:Class="FantasyNameGenerator.WPF.Windows.MainWindow"
         mc:Ignorable="d"
+        d:DataContext="{d:DesignInstance vm:DesignMainViewModel, IsDesignTimeCreatable=True}"
+        
         Title="Fantasy Name Generator" Height="450" Width="800"
-        MinHeight="300" MinWidth="400"
-        >
+        MinHeight="300" MinWidth="400">
     <Window.Resources>
+        <Converters:NegateBoolConverter x:Key="NegateBoolConverter"/>
         <Converters:EnumToBooleanConverter x:Key="EnumToBooleanConverter"/>
     </Window.Resources>
-    <Window.DataContext>
-        <vm:NamesViewModel />
-    </Window.DataContext>
     <Window.CommandBindings>
         <CommandBinding Command="Close" Executed="CommandBinding_OnClose"/>
     </Window.CommandBindings>
     <DockPanel>
         <Menu Height="20" IsMainMenu="True" DockPanel.Dock="Top">
-            <MenuItem Header="_File">
-                <MenuItem Header="_Generate" Command="{Binding GenerateCommand}"/>
+            <MenuItem Header="{x:Static res:Localization.FileLabel}">
+                <MenuItem Header="{x:Static res:Localization.GenerateButton}" Command="{Binding GenerateNameCommand}"/>
+                <!--<MenuItem Header="Edit" Click="OnEdit_Click"/>-->
                 <Separator/>
                 <MenuItem Command="Close"/>
             </MenuItem>
         </Menu>
-        <Expander Header="Advanced" IsExpanded="False" ExpandDirection="Left" DockPanel.Dock="Right">
+        <Expander Header="{x:Static res:Localization.AdvancedLabel}" ExpandDirection="Left" DockPanel.Dock="Right">
             <Expander.HeaderTemplate>
                 <DataTemplate>
                     <TextBlock Text="{Binding}">
@@ -42,13 +43,13 @@
                 </DataTemplate>
             </Expander.HeaderTemplate>
             <StackPanel Width="250">
-                <GroupBox Header="Name generation">
+                <GroupBox Header="{x:Static res:Localization.NameGenerationLabel}">
                     <StackPanel>
-                        <TextBlock Text="Sequence size"/>
+                        <TextBlock Text="{x:Static res:Localization.SequenceSizeLabel}"/>
                         <Slider Minimum="1" Maximum="10" IsSnapToTickEnabled="True" TickPlacement="TopLeft"
                                 AutoToolTipPlacement="TopLeft" AutoToolTipPrecision="0"
                                 Value="{Binding SequenceSize}"/>
-                        <TextBlock Text="Length modifier"/>
+                        <TextBlock Text="{x:Static res:Localization.LengthModifierLabel}"/>
                         <Slider Minimum="0.5" Maximum="2" IsSnapToTickEnabled="True" TickPlacement="TopLeft"
                                 AutoToolTipPlacement="TopLeft" AutoToolTipPrecision="2" TickFrequency="0.25"
                                 Value="{Binding LengthModifier}"/>
@@ -64,24 +65,26 @@
             </Grid.ColumnDefinitions>
             <StackPanel>
                 <ComboBox Margin="10,10,10,0"
-                      ItemsSource="{Binding Categories}" SelectedItem="{Binding SelectedCategory, Mode=TwoWay}"
-                      DisplayMemberPath="Name"/>
+                          IsEnabled="{Binding IsLoading, Converter={StaticResource NegateBoolConverter}}"
+                          ItemsSource="{Binding Categories}" SelectedItem="{Binding SelectedCategory, Mode=TwoWay}"
+                          DisplayMemberPath="Name"/>
                 <ComboBox Margin="10,5,10,0"
-                      ItemsSource="{Binding Cultures}" SelectedValue="{Binding SelectedCulture, Mode=TwoWay}"
-                      DisplayMemberPath="Name"/>
-                <GroupBox Header="Options" Margin="10,5,10,0">
+                          IsEnabled="{Binding IsLoading, Converter={StaticResource NegateBoolConverter}}"
+                          ItemsSource="{Binding Cultures}" SelectedValue="{Binding SelectedCulture, Mode=TwoWay}"
+                          DisplayMemberPath="Name"/>
+                <GroupBox Header="{x:Static res:Localization.OptionsLabel}" Margin="10,5,10,0">
                     <StackPanel>
-                        <RadioButton Content="Male" HorizontalAlignment="Left" Height="16"
+                        <RadioButton Content="{x:Static res:Localization.MaleLabel}" HorizontalAlignment="Left" Height="16"
                                      IsChecked="{Binding Gender, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:Static common:Gender.Male}}"/>
-                        <RadioButton Content="Female" HorizontalAlignment="Left" Height="16"
+                        <RadioButton Content="{x:Static res:Localization.FemaleLabel}" HorizontalAlignment="Left" Height="16"
                                      IsChecked="{Binding Gender, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:Static common:Gender.Female}}"/>
                     </StackPanel>
                 </GroupBox>
                 <TextBlock Margin="10,10,10,0"
                            TextWrapping="Wrap" Text="{Binding Metadata.Description}"/>
             </StackPanel>
-            <Button Content="Generate" Margin="10,0,10,10" Height="20" VerticalAlignment="Bottom"
-                    Command="{Binding GenerateCommand}"/>
+            <Button Content="{x:Static res:Localization.GenerateButton}" Margin="10,0,10,10" Height="20" VerticalAlignment="Bottom"
+                    Command="{Binding GenerateNameCommand}"/>
             <GridSplitter Grid.Column="1" HorizontalAlignment="Stretch"/>
             <ListBox Grid.Column="2" ItemsSource="{Binding GeneratedNames}">
                 <ListBox.CommandBindings>
@@ -95,10 +98,10 @@
                 </ListBox.ItemTemplate>
                 <ListBox.ContextMenu>
                     <ContextMenu>
-                        <MenuItem Command="Save" Header="Save All"/>
+                        <MenuItem Command="Save" Header="{x:Static res:Localization.SaveAllLabel}"/>
                         <MenuItem Command="Copy"/>
                         <Separator/>
-                        <MenuItem Header="Clear" Command="{Binding ClearNamesCommand}"/>
+                        <MenuItem Command="{Binding ClearNamesCommand}" Header="{x:Static res:Localization.ClearLabel}"/>
                     </ContextMenu>
                 </ListBox.ContextMenu>
             </ListBox>
