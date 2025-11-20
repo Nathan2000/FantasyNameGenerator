@@ -1,26 +1,33 @@
-﻿namespace FantasyNameGenerator.Lib.Domain.Distribution
+﻿using FantasyNameGenerator.Lib.Domain.Services;
+
+namespace FantasyNameGenerator.Lib.Domain.Distribution
 {
     public class NormalDistribution : IDistribution
     {
-        private static bool _generate;
-        private static double _z0;
-        private static double _z1;
-        private readonly double _mean;
-        private readonly double _deviation;
+        private readonly IRandomProvider _random;
 
-        public NormalDistribution(double mean, double deviation)
+        public double Mean { get; }
+        public double Deviation { get; }
+
+        private bool _generate;
+        private double _z0;
+        private double _z1;
+
+        public NormalDistribution(double mean, double deviation, IRandomProvider? random = null)
         {
-            _mean = mean;
-            _deviation = deviation;
+            _random = random ?? new DefaultRandomProvider();
+            Mean = mean;
+            Deviation = deviation;
         }
 
-        public NormalDistribution(int[] numbers)
+        public NormalDistribution(int[] numbers, IRandomProvider? random = null)
         {
-            if (numbers == null || numbers.Length == 0)
-                throw new ArgumentException("Numbers cannot be null or empty.", nameof(numbers));
+            if (numbers.Length == 0)
+                throw new ArgumentException("Numbers cannot be empty.", nameof(numbers));
 
-            _mean = numbers.Average();
-            _deviation = Math.Sqrt(numbers.Sum(n => Math.Pow(n - _mean, 2)) / (numbers.Length - 1));
+            Mean = numbers.Average();
+            Deviation = Math.Sqrt(numbers.Average(n => Math.Pow(n - Mean, 2)));
+            _random = random ?? new DefaultRandomProvider();
         }
 
         /// <summary>
@@ -32,20 +39,15 @@
             const double TwoPi = 2.0 * Math.PI;
             _generate = !_generate;
             if (!_generate)
-            {
                 return ScaleToMean(_z1);
-            }
 
-            double u1 = Random.Shared.NextDouble();
-            double u2 = Random.Shared.NextDouble();
+            double u1 = _random.NextDouble();
+            double u2 = _random.NextDouble();
             _z0 = Math.Sqrt(-2.0 * Math.Log(u1)) * Math.Cos(TwoPi * u2);
             _z1 = Math.Sqrt(-2.0 * Math.Log(u1)) * Math.Sin(TwoPi * u2);
             return ScaleToMean(_z0);
         }
 
-        private double ScaleToMean(double number)
-        {
-            return number * _deviation + _mean;
-        }
+        private double ScaleToMean(double number) => number * Deviation + Mean;
     }
 }
